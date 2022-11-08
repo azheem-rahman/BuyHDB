@@ -30,18 +30,22 @@ const createUser = async (req, res) => {
   // console.log(req.body);
   try {
     // check to see if user account already exists to prevent duplicates
-    let username_exists = false;
-    const data = await pool.query("SELECT username FROM users_accounts;");
+    // let usernameExists = false;
+    const usernameExists = await pool.query(
+      `SELECT username FROM users_accounts
+      WHERE username='${req.body.username}'
+      ;`
+    );
     // console.log(data);
 
     // .map through accounts array to see if username exists
-    data.rows.map((account) => {
-      if (account.username === req.body.username.toLowerCase()) {
-        username_exists = true;
-      }
-    });
+    // data.rows.map((account) => {
+    //   if (account.username === req.body.username.toLowerCase()) {
+    //     usernameExists = true;
+    //   }
+    // });
 
-    if (username_exists) {
+    if (usernameExists) {
       // if username already exists, dont create user and respond with error
       res.json({ status: "error", message: "username taken" });
     } else {
