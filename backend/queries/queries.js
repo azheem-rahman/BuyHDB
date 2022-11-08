@@ -1,4 +1,6 @@
 const Pool = require("pg").Pool;
+const bcrypt = require("bcrypt");
+const { v4: uuidv4 } = require("uuid");
 
 const pool = new Pool({
   user: "admin",
@@ -23,4 +25,50 @@ const getAllUsersAccounts = async (req, res) => {
   }
 };
 
-module.exports = { getAllUsersAccounts };
+// ========================== CREATE USER ACCOUNT ========================== //
+const createUser = async (req, res) => {
+  // console.log(req.body);
+  try {
+    // check to see if user account already exists to prevent duplicates
+    let username_exists = false;
+    const data = await pool.query("SELECT username FROM users_accounts;");
+    // console.log(data);
+
+    // .map through accounts array to see if username exists
+    data.rows.map((account) => {
+      if (account.username === req.body.username.toLowerCase()) {
+        username_exists = true;
+      }
+    });
+
+    if (username_exists) {
+      // if username already exists, dont create user and respond with error
+      res.json({ status: "error", message: "username taken" });
+    } else {
+      // if username does not exist, proceed to create new user account below
+      // create new user_id
+      const newId = uuidv4();
+
+      // add in bcrypt to password
+      const password = await bcrypt.hash(req.body.password, 12);
+
+      // create new user account
+      await pool.query(
+        `INSERT INTO users_accounts(username, password) VALUES ('${req.body.username}', '${password}')`
+      );
+
+      res.json({
+        status: "ok",
+        message: `user ${req.body.username} created successfully`,
+      });
+    }
+  } catch (err) {
+    console.error(err.message);
+    res.status(400).json({
+      status: "error",
+      message: `failed to create ${req.body.username} user account`,
+    });
+  }
+};
+
+module.exports = { getAllUsersAccounts, createUser };
