@@ -299,14 +299,45 @@ const getAllSavedListings = async (req, res) => {
     console.error(err.message);
     res.status(400).json({
       status: "error",
-      message: `failed to retrieve ${req.body.username}'s saved listings`,
+      message: `failed to get ${req.body.username}'s saved listings`,
     });
   }
 };
 
 // ==================== Delete User Saved Listings (one) =================== //
+const deleteOneSavedListing = async (req, res) => {
+  try {
+    // to delete one saved listing for a user
+
+    // find the user_id based on username
+    const getUserID = await pool.query(
+      `SELECT user_id FROM users_accounts
+      WHERE username='${req.body.username}';`
+    );
+    // console.log(userID.rows[0].user_id);
+    const userID = getUserID.rows[0].user_id;
+
+    await pool.query(
+      `DELETE FROM saved_listings
+      WHERE user_id=${userID} AND saved_listing_id=${req.body.savedListingID}`
+    );
+
+    res.json({ status: "ok", message: "listing deleted successfully" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(400).json({
+      status: "error",
+      message: "failed to delete saved listing",
+    });
+  }
+};
 
 // ==================== Delete User Saved Listings (all) =================== //
+const deleteAllSavedListings = async (req, res) => {
+  try {
+    // to delete all saved listings for a user
+  } catch (err) {}
+};
 
 // ========================================================================= //
 // ============================= ADMIN PORTION ============================= //
@@ -320,8 +351,7 @@ const createAdmin = async (req, res) => {
     // let usernameExists = false;
     const usernameExists = await pool.query(
       `SELECT username FROM administrators_accounts
-                  WHERE username='${req.body.username}'
-                  ;`
+      WHERE username='${req.body.username}';`
     );
     // console.log(data);
 
@@ -411,4 +441,5 @@ module.exports = {
   updateDetailsUser,
   createListingUser,
   getAllSavedListings,
+  deleteOneSavedListing,
 };

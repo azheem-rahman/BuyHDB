@@ -19,6 +19,7 @@ app.put("/user-create-details", db.createDetailsUser);
 app.patch("/user-update-details", db.updateDetailsUser);
 app.put("/user-create-listing", db.createListingUser);
 app.get("/user-saved-listings", db.getAllSavedListings);
+app.delete("/user-delete-one-saved-listing", db.deleteOneSavedListing);
 
 app.put("/admin-create-account", db.createAdmin);
 app.post("/admin-login", db.loginAdmin);
