@@ -231,27 +231,27 @@ const createListingUser = async (req, res) => {
     // pass req.body to create new listing row in saved_listings table
     await pool.query(
       `INSERT INTO saved_listings(
-        user_id,
-        saved_street_name,
-        saved_block,
-        saved_storey_range,
-        saved_floor_area_sqm,
-        saved_resale_price,
-        saved_remaining_lease,
-        saved_flat_type,
-        saved_flat_model
-        ) 
-        VALUES (
-          '${userID}',
-          '${req.body.savedStreetName}', 
-          '${req.body.savedBlock}',
-          '${req.body.savedStoreyRange}',
-          '${req.body.savedFloorAreaSqm}',
-          '${req.body.savedResalePrice}',
-          '${req.body.savedRemainingLease}',
-          '${req.body.savedFlatType}',
-          '${req.body.savedFlatModel}'
-        );`
+          user_id,
+          saved_street_name,
+          saved_block,
+          saved_storey_range,
+          saved_floor_area_sqm,
+          saved_resale_price,
+          saved_remaining_lease,
+          saved_flat_type,
+          saved_flat_model
+          ) 
+          VALUES (
+            '${userID}',
+            '${req.body.savedStreetName}', 
+            '${req.body.savedBlock}',
+            '${req.body.savedStoreyRange}',
+            '${req.body.savedFloorAreaSqm}',
+            '${req.body.savedResalePrice}',
+            '${req.body.savedRemainingLease}',
+            '${req.body.savedFlatType}',
+            '${req.body.savedFlatModel}'
+            );`
     );
 
     res.json({
@@ -263,6 +263,43 @@ const createListingUser = async (req, res) => {
     res.status(400).json({
       status: "error",
       message: `failed to update user details for user ${req.body.username}`,
+    });
+  }
+};
+
+// ======================== Read User Saved Listings ======================= //
+const getAllUsersSavedListings = async (req, res) => {
+  try {
+    // to get a user's saved listings (all listings)
+
+    // find the user_id based on username
+    const getUserID = await pool.query(
+      `SELECT user_id FROM users_accounts
+      WHERE username='${req.body.username}';`
+    );
+    // console.log(userID.rows[0].user_id);
+    const userID = getUserID.rows[0].user_id;
+
+    // check to see if there are saved listing under user_id
+    const savedListingsFound = await pool.query(
+      `SELECT * FROM saved_listings
+      JOIN users_accounts ON users_accounts.user_id=saved_listings.user_id
+      WHERE users_accounts.user_id='${userID}';`
+    );
+    // console.log(
+    //   savedListingsFound.rows.map((item, index) => {
+    //     return item;
+    //   })
+    // );
+
+    // if there are saved listings found, respond with array of saved listings objects to frontend
+    // if there are no saved listings found, respond with empty array
+    res.json(savedListingsFound.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(400).json({
+      status: "error",
+      message: `failed to retrieve ${req.body.username}'s saved listings`,
     });
   }
 };
@@ -369,4 +406,5 @@ module.exports = {
   createDetailsUser,
   updateDetailsUser,
   createListingUser,
+  getAllUsersSavedListings,
 };
