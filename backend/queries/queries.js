@@ -38,20 +38,11 @@ const createUser = async (req, res) => {
     );
     // console.log(data);
 
-    // .map through accounts array to see if username exists
-    // data.rows.map((account) => {
-    //   if (account.username === req.body.username.toLowerCase()) {
-    //     usernameExists = true;
-    //   }
-    // });
-
-    if (usernameExists) {
+    if (usernameExists.rowCount) {
       // if username already exists, dont create user and respond with error
       res.json({ status: "error", message: "username taken" });
     } else {
       // if username does not exist, proceed to create new user account below
-      // create new user_id
-      const newId = uuidv4();
 
       // add in bcrypt to password
       const password = await bcrypt.hash(req.body.password, 12);
@@ -75,4 +66,52 @@ const createUser = async (req, res) => {
   }
 };
 
-module.exports = { getAllUsersAccounts, createUser };
+// ========================== LOGIN ========================== //
+const login = async (req, res) => {
+  try {
+    // check if username is found, if found proceed to login
+
+    const usernameFound = await pool.query(
+      `SELECT username FROM users_accounts
+      WHERE username='${req.body.username}'
+      ;`
+    );
+    // console.log(usernameFound);
+
+    if (usernameFound.rowCount !== 0) {
+      const passwordFound = await pool.query(
+        `SELECT password 
+        FROM users_accounts
+        WHERE username='${req.body.username}'`
+      );
+      // console.log(passwordFound.rows[0].password);
+
+      const passwordInDatabase = passwordFound.rows[0].password;
+
+      const passwordMatch = await bcrypt.compare(
+        req.body.password,
+        passwordInDatabase
+      );
+      // console.log(passwordMatch);
+
+      // check if password match
+      if (passwordMatch) {
+        // proceed to login
+        res.json({ status: "ok", message: "login successful" });
+      } else {
+        // respond error unable to login because password does not match
+        res.json({ status: "error", message: "invalid username or password" });
+      }
+    } else {
+      // respond error unable to login because user account does not exist
+      res.json({ status: "error", message: "invalid username or password" });
+    }
+
+    // username not found => respond with error
+  } catch (err) {
+    console.error(err.message);
+    res.status(400).json({ status: "error", message: "failed to login" });
+  }
+};
+
+module.exports = { getAllUsersAccounts, createUser, login };
