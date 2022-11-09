@@ -11,12 +11,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-const admin = require("./routes/adminRouter");
-const user = require("./routes/userRouter");
-
 app.get("/users", db.getAllUsersAccounts);
 
-app.put("/user-create", db.createUser);
+app.put("/user-create-account", db.createUser);
 app.post("/user-login", db.loginUser);
 app.put("/user-create-details", db.createDetailsUser);
 
