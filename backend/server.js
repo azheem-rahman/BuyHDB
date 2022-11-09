@@ -16,9 +16,10 @@ app.get("/users", db.getAllUsersAccounts);
 app.put("/user-create-account", db.createUser);
 app.post("/user-login", db.loginUser);
 app.put("/user-create-details", db.createDetailsUser);
+app.get("/user-get-user-details", db.getDetailsUser);
 app.patch("/user-update-details", db.updateDetailsUser);
 app.put("/user-create-listing", db.createListingUser);
-app.get("/user-saved-listings", db.getAllSavedListings);
+app.get("/user-get-all-saved-listings", db.getAllSavedListings);
 app.delete("/user-delete-one-saved-listing", db.deleteOneSavedListing);
 app.delete("/user-delete-all-saved-listings", db.deleteAllSavedListings);
 

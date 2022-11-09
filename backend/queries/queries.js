@@ -171,6 +171,36 @@ const createDetailsUser = async (req, res) => {
   }
 };
 
+// =========================== Read User Details ========================== //
+const getDetailsUser = async (req, res) => {
+  try {
+    // to get a user's details (all details)
+
+    // find the user id based on username
+    const getUserID = await pool.query(
+      `SELECT user_id FROM users_accounts
+      WHERE username='${req.body.username}';`
+    );
+    // console.log(userID.rows[0].user_id);
+    const userID = getUserID.rows[0].user_id;
+
+    const userDetails = await pool.query(
+      `SELECT * FROM users_details
+      WHERE user_id=${userID}`
+    );
+    console.log(userDetails.rows[0]);
+
+    // respond to frontend with object userDetails.rows[0] containing the user's details
+    res.json(userDetails.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+    res.status(400).json({
+      status: "error",
+      message: `failed to get all user details for user ${req.body.username}`,
+    });
+  }
+};
+
 // =========================== Update User Details ========================== //
 const updateDetailsUser = async (req, res) => {
   try {
@@ -468,12 +498,13 @@ module.exports = {
   getAllUsersAccounts,
   createUser,
   loginUser,
-  createAdmin,
-  loginAdmin,
   createDetailsUser,
+  getDetailsUser,
   updateDetailsUser,
   createListingUser,
   getAllSavedListings,
   deleteOneSavedListing,
   deleteAllSavedListings,
+  createAdmin,
+  loginAdmin,
 };
