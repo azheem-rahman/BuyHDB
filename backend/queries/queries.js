@@ -37,8 +37,7 @@ const createUser = async (req, res) => {
     // let usernameExists = false;
     const usernameExists = await pool.query(
       `SELECT username FROM users_accounts
-        WHERE username='${req.body.username}'
-        ;`
+        WHERE username='${req.body.username}';`
     );
     // console.log(data);
 
@@ -53,7 +52,8 @@ const createUser = async (req, res) => {
 
       // create new user account
       await pool.query(
-        `INSERT INTO users_accounts(username, password) VALUES ('${req.body.username}', '${password}')`
+        `INSERT INTO users_accounts(username, password) 
+        VALUES ('${req.body.username}', '${password}');`
       );
 
       res.json({
@@ -77,16 +77,15 @@ const loginUser = async (req, res) => {
 
     const usernameFound = await pool.query(
       `SELECT username FROM users_accounts
-      WHERE username='${req.body.username}'
-      ;`
+      WHERE username='${req.body.username}';`
     );
     // console.log(usernameFound);
 
     if (usernameFound.rowCount !== 0) {
       const passwordFound = await pool.query(
         `SELECT password 
-          FROM users_accounts
-          WHERE username='${req.body.username}'`
+        FROM users_accounts
+        WHERE username='${req.body.username}';`
       );
       // console.log(passwordFound.rows[0].password);
 
@@ -131,8 +130,7 @@ const createDetailsUser = async (req, res) => {
     // find the user account's user_id based on its username from users_accounts table => set user_id found to userID
     const getUserID = await pool.query(
       `SELECT user_id FROM users_accounts
-      WHERE username='${req.body.username}'
-      ;`
+      WHERE username='${req.body.username}';`
     );
     // console.log(userID.rows[0].user_id);
     const userID = getUserID.rows[0].user_id;
@@ -157,7 +155,7 @@ const createDetailsUser = async (req, res) => {
           '${req.body.flatModel}',
           '${req.body.monthlyCombinedIncome}',
           '${req.body.youngerAge}'
-        )`
+        );`
     );
 
     res.json({
@@ -177,10 +175,11 @@ const createDetailsUser = async (req, res) => {
 const updateDetailsUser = async (req, res) => {
   try {
     // to update user details after user has created account and created user details
+
+    // find the user id based on username
     const getUserID = await pool.query(
       `SELECT user_id FROM users_accounts
-      WHERE username='${req.body.username}'
-      ;`
+      WHERE username='${req.body.username}';`
     );
     // console.log(userID.rows[0].user_id);
     const userID = getUserID.rows[0].user_id;
@@ -197,7 +196,7 @@ const updateDetailsUser = async (req, res) => {
         current_monthly_combined_income = '${req.body.monthlyCombinedIncome}',
         current_younger_age = '${req.body.youngerAge}'
       WHERE user_id = '${userID}'
-      RETURNING *`
+      RETURNING *;`
     );
     // if successfully updated, query returns updateUsersDetailsResult.rows[0] = object containing updated row information
     // if not successfully updated, error message comes out at console.error(err.message) under catch(err) below
@@ -218,6 +217,16 @@ const updateDetailsUser = async (req, res) => {
 // ======================== Create User Saved Listing ====================== //
 const createListingUser = async (req, res) => {
   try {
+    // to create a new listing row in saved_listing table when user saves a resale listing
+
+    // find the user id based on username
+    const getUserID = await pool.query(
+      `SELECT user_id FROM users_accounts
+      WHERE username='${req.body.username}';`
+    );
+    // console.log(userID.rows[0].user_id);
+    const userID = getUserID.rows[0].user_id;
+
     // on frontend, user clicks on heart icon => take in the data from frontend into req.body
     // pass req.body to create new listing in saved_listings table
   } catch (err) {}
