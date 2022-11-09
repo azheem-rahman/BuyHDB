@@ -319,7 +319,7 @@ const deleteOneSavedListing = async (req, res) => {
 
     await pool.query(
       `DELETE FROM saved_listings
-      WHERE user_id=${userID} AND saved_listing_id=${req.body.savedListingID}`
+      WHERE user_id=${userID} AND saved_listing_id=${req.body.savedListingID};`
     );
 
     res.json({ status: "ok", message: "listing deleted successfully" });
@@ -336,7 +336,40 @@ const deleteOneSavedListing = async (req, res) => {
 const deleteAllSavedListings = async (req, res) => {
   try {
     // to delete all saved listings for a user
-  } catch (err) {}
+
+    // find the user_id based on username
+    const getUserID = await pool.query(
+      `SELECT user_id FROM users_accounts
+      WHERE username='${req.body.username}';`
+    );
+    // console.log(userID.rows[0].user_id);
+    const userID = getUserID.rows[0].user_id;
+
+    const deleteAllSavedListingsResults = await pool.query(
+      `DELETE FROM saved_listings
+      WHERE user_id='${userID}';`
+    );
+    // console.log(deleteAllSavedListingsResults.rowCount);
+
+    // if no saved listings found for userID, deleteAllSavedListingsResults.rowCount = 0
+    if (deleteAllSavedListingsResults.rowCount != 0) {
+      res.json({
+        status: "ok",
+        message: `all saved listings for user ${req.body.username} deleted successfully`,
+      });
+    } else {
+      res.json({
+        status: "error",
+        mssage: `no saved listings found for user ${req.body.username}`,
+      });
+    }
+  } catch (err) {
+    console.error(err.message);
+    res.status(400).json({
+      status: "error",
+      message: `failed to delete all saved listings for user ${req.body.username}`,
+    });
+  }
 };
 
 // ========================================================================= //
@@ -442,4 +475,5 @@ module.exports = {
   createListingUser,
   getAllSavedListings,
   deleteOneSavedListing,
+  deleteAllSavedListings,
 };
