@@ -268,7 +268,7 @@ const createListingUser = async (req, res) => {
 };
 
 // ======================== Read User Saved Listings ======================= //
-const getAllUsersSavedListings = async (req, res) => {
+const getAllSavedListings = async (req, res) => {
   try {
     // to get a user's saved listings (all listings)
 
@@ -303,6 +303,10 @@ const getAllUsersSavedListings = async (req, res) => {
     });
   }
 };
+
+// ==================== Delete User Saved Listings (one) =================== //
+
+// ==================== Delete User Saved Listings (all) =================== //
 
 // ========================================================================= //
 // ============================= ADMIN PORTION ============================= //
@@ -406,5 +410,5 @@ module.exports = {
   createDetailsUser,
   updateDetailsUser,
   createListingUser,
-  getAllUsersSavedListings,
+  getAllSavedListings,
 };
