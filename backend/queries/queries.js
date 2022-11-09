@@ -176,7 +176,43 @@ const createDetailsUser = async (req, res) => {
 // =========================== Update User Details ========================== //
 const updateDetailsUser = async (req, res) => {
   try {
-  } catch (err) {}
+    // to update user details after user has created account and created user details
+    const getUserID = await pool.query(
+      `SELECT user_id FROM users_accounts
+      WHERE username='${req.body.username}'
+      ;`
+    );
+    // console.log(userID.rows[0].user_id);
+    const userID = getUserID.rows[0].user_id;
+
+    // create a new row inside user_details table
+    // where users_details.user_id = users_accounts.user_id = userID found above
+    const updateUsersDetailsResult = await pool.query(
+      `UPDATE users_details
+      SET 
+        given_name = '${req.body.givenName}', 
+        current_town = '${req.body.currentTown}',
+        current_flat_type = '${req.body.flatType}',
+        current_flat_model = '${req.body.flatModel}',
+        current_monthly_combined_income = '${req.body.monthlyCombinedIncome}',
+        current_younger_age = '${req.body.youngerAge}'
+      WHERE user_id = '${userID}'
+      RETURNING *`
+    );
+    // if successfully updated, query returns updateUsersDetailsResult.rows[0] = object containing updated row information
+    // if not successfully updated, error message comes out at console.error(err.message) under catch(err) below
+    console.log(updateUsersDetailsResult.rows[0]);
+    res.json({
+      status: "ok",
+      message: `updated user detail for user ${req.body.username} successfully`,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(400).json({
+      status: "error",
+      message: `failed to update user details for user ${req.body.username}`,
+    });
+  }
 };
 
 // ======================== Create User Saved Listing ====================== //
@@ -287,4 +323,5 @@ module.exports = {
   createAdmin,
   loginAdmin,
   createDetailsUser,
+  updateDetailsUser,
 };
