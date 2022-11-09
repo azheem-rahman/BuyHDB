@@ -17,6 +17,7 @@ app.put("/user-create-account", db.createUser);
 app.post("/user-login", db.loginUser);
 app.put("/user-create-details", db.createDetailsUser);
 app.patch("/user-update-details", db.updateDetailsUser);
+app.put("/user-create-listing", db.createListingUser);
 
 app.put("/admin-create-account", db.createAdmin);
 app.post("/admin-login", db.loginAdmin);

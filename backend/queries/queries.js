@@ -200,7 +200,7 @@ const updateDetailsUser = async (req, res) => {
     );
     // if successfully updated, query returns updateUsersDetailsResult.rows[0] = object containing updated row information
     // if not successfully updated, error message comes out at console.error(err.message) under catch(err) below
-    console.log(updateUsersDetailsResult.rows[0]);
+    // console.log(updateUsersDetailsResult.rows[0]);
     res.json({
       status: "ok",
       message: `updated user detail for user ${req.body.username} successfully`,
@@ -219,7 +219,7 @@ const createListingUser = async (req, res) => {
   try {
     // to create a new listing row in saved_listing table when user saves a resale listing
 
-    // find the user id based on username
+    // find the user_id based on username
     const getUserID = await pool.query(
       `SELECT user_id FROM users_accounts
       WHERE username='${req.body.username}';`
@@ -228,8 +228,43 @@ const createListingUser = async (req, res) => {
     const userID = getUserID.rows[0].user_id;
 
     // on frontend, user clicks on heart icon => take in the data from frontend into req.body
-    // pass req.body to create new listing in saved_listings table
-  } catch (err) {}
+    // pass req.body to create new listing row in saved_listings table
+    await pool.query(
+      `INSERT INTO saved_listings(
+        user_id,
+        saved_street_name,
+        saved_block,
+        saved_storey_range,
+        saved_floor_area_sqm,
+        saved_resale_price,
+        saved_remaining_lease,
+        saved_flat_type,
+        saved_flat_model
+        ) 
+        VALUES (
+          '${userID}',
+          '${req.body.savedStreetName}', 
+          '${req.body.savedBlock}',
+          '${req.body.savedStoreyRange}',
+          '${req.body.savedFloorAreaSqm}',
+          '${req.body.savedResalePrice}',
+          '${req.body.savedRemainingLease}',
+          '${req.body.savedFlatType}',
+          '${req.body.savedFlatModel}'
+        );`
+    );
+
+    res.json({
+      status: "ok",
+      message: `created new saved listing for user ${req.body.username} successfully`,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(400).json({
+      status: "error",
+      message: `failed to update user details for user ${req.body.username}`,
+    });
+  }
 };
 
 // ========================================================================= //
@@ -333,4 +368,5 @@ module.exports = {
   loginAdmin,
   createDetailsUser,
   updateDetailsUser,
+  createListingUser,
 };
