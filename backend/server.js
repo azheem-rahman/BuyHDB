@@ -15,8 +15,12 @@ const admin = require("./routes/adminRouter");
 const user = require("./routes/userRouter");
 
 app.get("/users", db.getAllUsersAccounts);
+
 app.put("/create-user", db.createUser);
-app.post("/user-login", db.login);
+app.post("/user-login", db.loginUser);
+
+app.put("/create-admin", db.createAdmin);
+app.post("/admin-login", db.loginAdmin);
 
 const PORT = process.env.PORT || 5001;
 
