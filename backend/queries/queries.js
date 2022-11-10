@@ -404,6 +404,33 @@ const deleteAllSavedListings = async (req, res) => {
 };
 
 // ================== Create Delete Account Request by User ================ //
+const createDeleteAccountRequest = async (req, res) => {
+  try {
+    // find the user_id based on username
+    const getUserID = await pool.query(
+      `SELECT user_id FROM users_accounts
+      WHERE username = '${req.body.username}';`
+    );
+    // console.log(userID.rows[0].user_id);
+    const userID = getUserID.rows[0].user_id;
+
+    await pool.query(
+      `INSERT INTO delete_requests (user_id)
+      VALUES ('${userID}')`
+    );
+
+    res.json({
+      status: "ok",
+      message: `Successfully created delete account request for ${req.body.username}`,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(400).json({
+      status: "error",
+      message: `failed to create delete request for ${req.body.username}`,
+    });
+  }
+};
 
 // ========================================================================= //
 // ============================= ADMIN PORTION ============================= //
@@ -515,6 +542,7 @@ const deleteUserAccountByAdmin = async (req, res) => {
     // console.log(userID.rows[0].user_id);
     const userID = getUserID.rows[0].user_id;
 
+    // delete user account from users_accounts table
     await pool.query(
       `DELETE FROM users_accounts
       WHERE user_id = '${userID}'`
@@ -567,6 +595,7 @@ module.exports = {
   getAllSavedListings,
   deleteOneSavedListing,
   deleteAllSavedListings,
+  createDeleteAccountRequest,
   createAdmin,
   loginAdmin,
   getAllDeleteRequests,
