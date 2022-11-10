@@ -25,6 +25,7 @@ app.delete("/user-delete-all-saved-listings", db.deleteAllSavedListings);
 
 app.put("/admin-create-account", db.createAdmin);
 app.post("/admin-login", db.loginAdmin);
+app.get("/admin-get-delete-requests", db.getAllDeleteRequests);
 app.delete("/admin-delete-user-account", db.deleteUserAccountByAdmin);
 
 const PORT = process.env.PORT || 5001;

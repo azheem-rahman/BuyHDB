@@ -37,7 +37,7 @@ const createUser = async (req, res) => {
     // let usernameExists = false;
     const usernameExists = await pool.query(
       `SELECT username FROM users_accounts
-        WHERE username='${req.body.username}';`
+        WHERE username = '${req.body.username}';`
     );
     // console.log(data);
 
@@ -77,7 +77,7 @@ const loginUser = async (req, res) => {
 
     const usernameFound = await pool.query(
       `SELECT username FROM users_accounts
-      WHERE username='${req.body.username}';`
+      WHERE username = '${req.body.username}';`
     );
     // console.log(usernameFound);
 
@@ -85,7 +85,7 @@ const loginUser = async (req, res) => {
       const passwordFound = await pool.query(
         `SELECT password 
         FROM users_accounts
-        WHERE username='${req.body.username}';`
+        WHERE username = '${req.body.username}';`
       );
       // console.log(passwordFound.rows[0].password);
 
@@ -130,7 +130,7 @@ const createDetailsUser = async (req, res) => {
     // find the user account's user_id based on its username from users_accounts table => set user_id found to userID
     const getUserID = await pool.query(
       `SELECT user_id FROM users_accounts
-      WHERE username='${req.body.username}';`
+      WHERE username = '${req.body.username}';`
     );
     // console.log(userID.rows[0].user_id);
     const userID = getUserID.rows[0].user_id;
@@ -179,14 +179,14 @@ const getDetailsUser = async (req, res) => {
     // find the user id based on username
     const getUserID = await pool.query(
       `SELECT user_id FROM users_accounts
-      WHERE username='${req.body.username}';`
+      WHERE username = '${req.body.username}';`
     );
     // console.log(userID.rows[0].user_id);
     const userID = getUserID.rows[0].user_id;
 
     const userDetails = await pool.query(
       `SELECT * FROM users_details
-      WHERE user_id=${userID}`
+      WHERE user_id = ${userID}`
     );
     console.log(userDetails.rows[0]);
 
@@ -209,7 +209,7 @@ const updateDetailsUser = async (req, res) => {
     // find the user id based on username
     const getUserID = await pool.query(
       `SELECT user_id FROM users_accounts
-      WHERE username='${req.body.username}';`
+      WHERE username = '${req.body.username}';`
     );
     // console.log(userID.rows[0].user_id);
     const userID = getUserID.rows[0].user_id;
@@ -252,7 +252,7 @@ const createListingUser = async (req, res) => {
     // find the user_id based on username
     const getUserID = await pool.query(
       `SELECT user_id FROM users_accounts
-      WHERE username='${req.body.username}';`
+      WHERE username = '${req.body.username}';`
     );
     // console.log(userID.rows[0].user_id);
     const userID = getUserID.rows[0].user_id;
@@ -305,7 +305,7 @@ const getAllSavedListings = async (req, res) => {
     // find the user_id based on username
     const getUserID = await pool.query(
       `SELECT user_id FROM users_accounts
-      WHERE username='${req.body.username}';`
+      WHERE username = '${req.body.username}';`
     );
     // console.log(userID.rows[0].user_id);
     const userID = getUserID.rows[0].user_id;
@@ -313,8 +313,8 @@ const getAllSavedListings = async (req, res) => {
     // check to see if there are saved listing under user_id
     const savedListingsFound = await pool.query(
       `SELECT * FROM saved_listings
-      JOIN users_accounts ON users_accounts.user_id=saved_listings.user_id
-      WHERE users_accounts.user_id='${userID}';`
+      JOIN users_accounts ON users_accounts.user_id = saved_listings.user_id
+      WHERE users_accounts.user_id = '${userID}';`
     );
     // console.log(
     //   savedListingsFound.rows.map((item, index) => {
@@ -342,14 +342,15 @@ const deleteOneSavedListing = async (req, res) => {
     // find the user_id based on username
     const getUserID = await pool.query(
       `SELECT user_id FROM users_accounts
-      WHERE username='${req.body.username}';`
+      WHERE username = '${req.body.username}';`
     );
     // console.log(userID.rows[0].user_id);
     const userID = getUserID.rows[0].user_id;
 
     await pool.query(
       `DELETE FROM saved_listings
-      WHERE user_id=${userID} AND saved_listing_id=${req.body.savedListingID};`
+      WHERE user_id = ${userID} 
+      AND saved_listing_id = ${req.body.savedListingID};`
     );
 
     res.json({ status: "ok", message: "listing deleted successfully" });
@@ -370,14 +371,14 @@ const deleteAllSavedListings = async (req, res) => {
     // find the user_id based on username
     const getUserID = await pool.query(
       `SELECT user_id FROM users_accounts
-      WHERE username='${req.body.username}';`
+      WHERE username = '${req.body.username}';`
     );
     // console.log(userID.rows[0].user_id);
     const userID = getUserID.rows[0].user_id;
 
     const deleteAllSavedListingsResults = await pool.query(
       `DELETE FROM saved_listings
-      WHERE user_id='${userID}';`
+      WHERE user_id = '${userID}';`
     );
     // console.log(deleteAllSavedListingsResults.rowCount);
 
@@ -402,6 +403,8 @@ const deleteAllSavedListings = async (req, res) => {
   }
 };
 
+// ================== Create Delete Account Request by User ================ //
+
 // ========================================================================= //
 // ============================= ADMIN PORTION ============================= //
 // ========================================================================= //
@@ -414,7 +417,7 @@ const createAdmin = async (req, res) => {
     // let usernameExists = false;
     const usernameExists = await pool.query(
       `SELECT username FROM administrators_accounts
-      WHERE username='${req.body.username}';`
+      WHERE username = '${req.body.username}';`
     );
     // console.log(data);
 
@@ -429,7 +432,8 @@ const createAdmin = async (req, res) => {
 
       // create new user account
       await pool.query(
-        `INSERT INTO administrators_accounts(username, password) VALUES ('${req.body.username}', '${password}')`
+        `INSERT INTO administrators_accounts(username, password) 
+        VALUES ('${req.body.username}', '${password}')`
       );
 
       res.json({
@@ -453,7 +457,7 @@ const loginAdmin = async (req, res) => {
 
     const usernameFound = await pool.query(
       `SELECT username FROM administrators_accounts
-      WHERE username='${req.body.username}'
+      WHERE username = '${req.body.username}'
       ;`
     );
     // console.log(usernameFound);
@@ -462,7 +466,7 @@ const loginAdmin = async (req, res) => {
       const passwordFound = await pool.query(
         `SELECT password 
         FROM administrators_accounts
-        WHERE username='${req.body.username}'`
+        WHERE username = '${req.body.username}'`
       );
       // console.log(passwordFound.rows[0].password);
 
@@ -506,7 +510,7 @@ const deleteUserAccountByAdmin = async (req, res) => {
     // find the user_id based on username
     const getUserID = await pool.query(
       `SELECT user_id FROM users_accounts
-      WHERE username='${req.body.username}';`
+      WHERE username = '${req.body.username}';`
     );
     // console.log(userID.rows[0].user_id);
     const userID = getUserID.rows[0].user_id;
@@ -529,6 +533,29 @@ const deleteUserAccountByAdmin = async (req, res) => {
   }
 };
 
+// ========== Using Admin Account to Read All Accounts Deletion Request ============ //
+const getAllDeleteRequests = async (req, res) => {
+  try {
+    const deleteRequestsFound = await pool.query(
+      `SELECT users_accounts.user_id, users_accounts.username
+      FROM users_accounts
+      JOIN delete_requests ON delete_requests.user_id=users_accounts.user_id`
+    );
+
+    if (deleteRequestsFound.rowCount != 0) {
+      res.json(deleteRequestsFound.rows);
+    } else {
+      res.json({ status: "ok", message: "no delete requests found" });
+    }
+  } catch (err) {
+    console.error(err.message);
+    res.status(400).json({
+      status: "error",
+      message: "failed to get all delete requests",
+    });
+  }
+};
+
 module.exports = {
   getAllUsersAccounts,
   createUser,
@@ -542,5 +569,6 @@ module.exports = {
   deleteAllSavedListings,
   createAdmin,
   loginAdmin,
+  getAllDeleteRequests,
   deleteUserAccountByAdmin,
 };
