@@ -494,6 +494,41 @@ const loginAdmin = async (req, res) => {
   }
 };
 
+// =============== Using Admin Account to delete User Account ============= //
+const deleteUserAccountByAdmin = async (req, res) => {
+  try {
+    // on frontend, user puts in request to delete their account
+    // request will pass to admin account
+    // admin can see all requests to delete user accounts (another route to be added in later)
+    // admin can proceed to delete user account
+    // => must be logged in to admin on frontend side to see the page
+
+    // find the user_id based on username
+    const getUserID = await pool.query(
+      `SELECT user_id FROM users_accounts
+      WHERE username='${req.body.username}';`
+    );
+    // console.log(userID.rows[0].user_id);
+    const userID = getUserID.rows[0].user_id;
+
+    await pool.query(
+      `DELETE FROM users_accounts
+      WHERE user_id = '${userID}'`
+    );
+
+    res.json({
+      status: "ok",
+      message: `${req.body.username} user account deleted successfully`,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(400).json({
+      status: "error",
+      message: `failed to delete ${req.body.username} user account`,
+    });
+  }
+};
+
 module.exports = {
   getAllUsersAccounts,
   createUser,
@@ -507,4 +542,5 @@ module.exports = {
   deleteAllSavedListings,
   createAdmin,
   loginAdmin,
+  deleteUserAccountByAdmin,
 };
