@@ -9,6 +9,7 @@ import PageCompare from "./pages/PageCompare";
 import PageResources from "./pages/PageResources";
 import PageResults from "./pages/PageResults";
 import PageLanding from "./pages/PageLanding";
+import PageCreateAccount from "./pages/PageCreateAccount";
 
 function App() {
   const [town, setTown] = useState("");
@@ -51,6 +52,7 @@ function App() {
         <Routes>
           <Route exact path="/" element={<Navigate replace to="/login" />} />
           <Route path="/login" element={<PageLanding />} />
+          <Route path="/create-account" element={<PageCreateAccount />} />
           <Route path="/Homepage" element={<PageHome />} />
           <Route path="/Search" element={<PageSearch />} />
           <Route path="/Results" element={<PageResults />} />

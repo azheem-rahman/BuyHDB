@@ -32,6 +32,10 @@ body {
   align-items: center;
 }
 
+.container {
+  border: 1px black;
+}
+
 li {
   display: inline;
   padding: 5px;

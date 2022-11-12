@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, NavLink } from "react-router-dom";
 
 import LoginCreateAccountSideImage from "../assets/LoginCreateAccountSideImage.jpg";
 import BuyHDBLogo2 from "../assets/BuyHDBLogo2.jpg";
@@ -31,12 +31,12 @@ const Login = () => {
         body: JSON.stringify(body),
       });
 
-      const data = await res.json();
+      const response = await res.json();
 
-      console.log(data);
+      console.log(response);
 
       // successful login
-      if (data.status === "ok") {
+      if (response.status === "ok") {
         setSuccessfulLogin(true);
       }
       // unsuccessful login
@@ -112,7 +112,11 @@ const Login = () => {
                 </div>
 
                 <div className="row" style={{ margin: 0, padding: 0 }}>
-                  <span>Sign up for an account</span>
+                  <span>
+                    <NavLink to="/create-account">
+                      Sign up for an account
+                    </NavLink>
+                  </span>
                 </div>
               </form>
             </div>

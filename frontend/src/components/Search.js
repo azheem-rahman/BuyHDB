@@ -17,7 +17,6 @@ const Search = () => {
   //================================================//
 
   // array of all towns in SG, total 26 towns (tengah excluded)
-  // towns arranged in regions: North > North-East > East > West > Central
   const townOptions = [
     "Ang Mo Kio",
     "Bedok",
