@@ -8,6 +8,7 @@ import PageSearch from "./pages/PageSearch";
 import PageCompare from "./pages/PageCompare";
 import PageResources from "./pages/PageResources";
 import PageResults from "./pages/PageResults";
+import PageLanding from "./pages/PageLanding";
 
 function App() {
   const [town, setTown] = useState("");
@@ -23,6 +24,10 @@ function App() {
   // for comparison feature
   //   const [compareFirst, setCompareFirst] = useState("");
   //   const [compareSecond, setCompareSecond] = useState("");
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
   return (
     <SomeContext.Provider
       value={{
@@ -36,13 +41,17 @@ function App() {
         setSearchCriteria,
         post,
         setPost,
+        username,
+        setUsername,
+        password,
+        setPassword,
       }}
     >
       <div className="container-fluid gx-0">
-        <NavBar />
         <Routes>
-          <Route exact path="/" element={<Navigate replace to="/Homepage" />} />
-          <Route exact path="/Homepage" element={<PageHome />} />
+          <Route exact path="/" element={<Navigate replace to="/login" />} />
+          <Route path="/login" element={<PageLanding />} />
+          <Route path="/Homepage" element={<PageHome />} />
           <Route path="/Search" element={<PageSearch />} />
           <Route path="/Results" element={<PageResults />} />
           <Route path="/Compare" element={<PageCompare />} />

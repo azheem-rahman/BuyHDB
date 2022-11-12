@@ -4,17 +4,28 @@
   box-sizing: border-box;
 }
 
+:root {
+  --blue: #3b9cff;
+  --lightBlue: #6eb6ff;
+  --lightLightBlue: #a1d0ff;
+  --black: #000000;
+  --darkGrey: #111111;
+  --lightGrey: #2a2a2a;
+}
+
 html {
-  font-family: "Oxygen", sans-serif;
+  height: 100%;
+  font-family: helvetica, sans-serif;
 }
 
 body {
+  height: 100%;
   margin: 0;
   background-color: whitesmoke;
 }
 
 .centered {
-  margin: 3rem auto;
+  /* margin: 3rem auto; */
   text-align: center;
   display: flex;
   justify-content: center;
@@ -27,15 +38,61 @@ li {
 }
 
 .homepage-header {
-  padding: 200px;
   text-align: center;
-  /* color: #edf2f4; */
-  /* color: #293241; */
-  color: black;
-  background-image: url("https://images.unsplash.com/photo-1512113899577-0fedd3870bae?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1631&q=80");
+  color: var(--lightGrey);
+  background-image: url("./assets/HeaderBackground.jpg");
   background-position: center center;
   background-size: cover;
-  background-repeat: no-repeat;
   height: 100%;
   width: 100%;
+  background-repeat: no-repeat;
+}
+
+.landing-page-background {
+  background-image: url("./assets/LandingPageBackground.jpg");
+  opacity: 0.7;
+  height: 100vh;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+.login-container {
+  /* guiding border */
+  border: 2px solid green;
+
+  height: auto;
+  max-width: 40vw;
+
+  /* center horizontally */
+  /* margin: 0 auto; */
+
+  /* center horizontally and vertically */
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.login-side-image {
+  border: 2px solid white;
+  height: auto;
+  width: 100%;
+}
+
+.login-entry-container {
+  border: 1px solid black;
+  height: auto;
+  width: 100%;
+  background-color: var(--lightBlue);
+}
+
+.login-entry-hdb-logo {
+  border: 2px solid red;
+  padding: 2px;
+  height: auto;
+  width: 50%;
+  margin: auto;
+  display: block;
 }
