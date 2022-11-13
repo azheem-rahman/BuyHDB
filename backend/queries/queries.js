@@ -258,17 +258,22 @@ const createListingUser = async (req, res) => {
     const userID = getUserID.rows[0].user_id;
 
     // check for duplicates (check if user has previously saved the same listing)
-    const duplicateFound = await pool.query(
+    const checkDuplicate = await pool.query(
       `SELECT * FROM saved_listings
-      WHERE user_id = ${userID}`
+      WHERE user_id = '${userID}' AND saved_listing_hdb_id = '${req.body.savedHDBListingID}'`
     );
 
-    console.log(duplicateFound.rows);
-
-    // on frontend, user clicks on heart icon => take in the data from frontend into req.body
-    // pass req.body to create new listing row in saved_listings table
-    await pool.query(
-      `INSERT INTO saved_listings(
+    // if duplicate exists, skip and dont add same listing into database
+    if (checkDuplicate.rowCount) {
+      res.json({
+        status: "ok",
+        message: `saved listing ${req.body.savedHDBListingID} for user ${req.body.username} already exists`,
+      });
+    } else {
+      // on frontend, user clicks on heart icon => take in the data from frontend into req.body
+      // pass req.body to create new listing row in saved_listings table
+      await pool.query(
+        `INSERT INTO saved_listings(
           user_id,
           saved_street_name,
           saved_block,
@@ -294,12 +299,13 @@ const createListingUser = async (req, res) => {
             '${req.body.savedTown}',
             '${req.body.savedHDBListingID}'
             );`
-    );
+      );
 
-    res.json({
-      status: "ok",
-      message: `created new saved listing for user ${req.body.username} successfully`,
-    });
+      res.json({
+        status: "ok",
+        message: `created new saved listing ${req.body.savedHDBListingID} for user ${req.body.username} successfully`,
+      });
+    }
   } catch (err) {
     console.error(err.message);
     res.status(400).json({
