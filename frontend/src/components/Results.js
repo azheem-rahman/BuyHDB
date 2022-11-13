@@ -66,6 +66,8 @@ const Results = () => {
           savedRemainingLease: oneListing.remaining_lease,
           savedFlatType: someCtx.flatType,
           savedFlatModel: someCtx.flatModel,
+          savedTown: someCtx.town,
+          savedHDBListingID: oneListing.id,
         };
 
         const res = await fetch(url, {
