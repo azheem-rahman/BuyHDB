@@ -67,6 +67,15 @@ li {
   border: 2px solid black;
 }
 
+.results-header {
+  color: white;
+  background-color: var(--lightGrey);
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 35vh;
+}
+
 .footer {
   color: white;
   background-color: #2a2a2a;

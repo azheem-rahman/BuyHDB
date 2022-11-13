@@ -238,8 +238,6 @@ const Search = () => {
           <br />
         </Form.Group>
       </Form>
-
-      {someCtx.searchCriteria ? <Navigate to="/Results" /> : ""}
     </div>
   );
 };

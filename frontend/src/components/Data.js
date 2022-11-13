@@ -56,6 +56,7 @@ const Data = (props) => {
               JSON.stringify(item.flat_model)
             ) {
               return unsortedMatchedResults.push({
+                _id: item._id,
                 town: item.town,
                 street_name: item.street_name,
                 block: item.block,
@@ -81,6 +82,7 @@ const Data = (props) => {
         return someCtx.setPost((prevState) => [
           ...prevState,
           {
+            id: item._id,
             town: item.town,
             street_name: item.street_name,
             block: item.block,

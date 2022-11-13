@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
+import { Navigate } from "react-router-dom";
 import ResaleFlatPricesHeader from "../components/ResaleFlatPricesHeader";
 import Search from "../components/Search";
 import NavBar from "../components/NavBar";
+import SomeContext from "../context/some-context";
 
 const PageSearch = () => {
+  const someCtx = useContext(SomeContext);
   return (
     <div>
       <NavBar />
@@ -20,7 +23,7 @@ const PageSearch = () => {
       </div>
 
       <div className="container">
-        <Search />
+        {someCtx.searchCriteria ? <Navigate to="/results" /> : <Search />}
       </div>
 
       <div className="footer d-flex align-items-end">

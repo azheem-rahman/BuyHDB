@@ -1,5 +1,5 @@
 // Results component to display result
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { NavLink } from "react-router-dom";
 
 import SomeContext from "../context/some-context";
@@ -9,78 +9,38 @@ import testData from "./testData";
 import Button from "react-bootstrap/esm/Button";
 import Table from "react-bootstrap/Table";
 
+import { DataGrid } from "@mui/x-data-grid";
+
 const Results = () => {
   const someCtx = useContext(SomeContext);
 
   let resultFound = false;
 
+  const [savedSelections, setSavedSelections] = useState([]);
+
   const checkResultFound = () => {
-    if (someCtx.post.length === 0) {
-      return (
-        <div className="row">
-          <div className="col d-flex justify-content-center">
-            {someCtx.post.length} results found
-          </div>
-        </div>
-      );
-    } else {
-      return (
-        <div className="row">
-          <div className="col d-flex justify-content-center">
-            {someCtx.post.length} results found
-            {(resultFound = true)}
-          </div>
-        </div>
-      );
+    if (someCtx.post.length !== 0) {
+      resultFound = true;
     }
   };
 
-  const printHeaders = () => {
-    const headerArr = [
-      "No.",
-      "Street Name",
-      "Block",
-      "Storey Range",
-      "Flat Type",
-      "Flat Model",
-      "Floor Area sqm",
-      "Resale Price",
-      "Remaining Lease",
-    ];
-    return (
-      <thead size="sm">
-        <tr size="sm">
-          {headerArr.map((item, index) => {
-            return <th size="sm">{item}</th>;
-          })}
-        </tr>
-      </thead>
-    );
-  };
+  // setting columns for results table using Data Grid from MUI
+  const columns = [
+    { field: "id", headerName: "Listing ID" },
+    { field: "street_name", headerName: "Street Name", flex: 1 },
+    { field: "block", headerName: "Block" },
+    { field: "storey_range", headerName: "Storey Range", flex: 1 },
+    { field: "floor_area_sqm", headerName: "Floor Area" },
+    { field: "resale_price", headerName: "Resale Price" },
+    { field: "remaining_lease", headerName: "Remaining Lease", flex: 1 },
+  ];
 
-  const printResults = () => {
-    return someCtx.post.map((item, index) => {
-      const resultArr = [
-        index + 1,
-        item.street_name,
-        item.block,
-        item.storey_range,
-        item.flat_type,
-        item.flat_model,
-        item.floor_area_sqm,
-        item.resale_price,
-        item.remaining_lease,
-      ];
-      return (
-        <tbody size="sm">
-          <tr size="sm">
-            {resultArr.map((item, index) => {
-              return <td size="sm">{item}</td>;
-            })}
-          </tr>
-        </tbody>
-      );
-    });
+  const onRowsSelectionHandle = (ids) => {
+    const selectedRowData = ids.map((id) =>
+      someCtx.post.find((row) => row.id === id)
+    );
+    console.log(selectedRowData);
+    setSavedSelections(selectedRowData);
   };
 
   const searchAgain = () => {
@@ -91,41 +51,122 @@ const Results = () => {
     someCtx.setPost([]);
   };
 
+  const saveUserSelectionsToBackend = () => {
+    const url = "http://127.0.0.1:5001/user-create-listing";
+
+    try {
+      const sendOneListingToBackend = async (url, oneListing) => {
+        const body = {
+          username: someCtx.currentUsername,
+          savedStreetName: oneListing.street_name,
+          savedBlock: oneListing.block,
+          savedStoreyRange: oneListing.storey_range,
+          savedFloorAreaSqm: oneListing.floor_area_sqm,
+          savedResalePrice: oneListing.resale_price,
+          savedRemainingLease: oneListing.remaining_lease,
+          savedFlatType: someCtx.flatType,
+          savedFlatModel: someCtx.flatModel,
+        };
+
+        const res = await fetch(url, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+
+        const response = await res.json();
+        console.log(response);
+      };
+
+      savedSelections.map((item) => {
+        return sendOneListingToBackend(url, item);
+      });
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
   return (
-    <div className="container">
-      <div className="row">
-        <div className="col">
-          <h1 className="centered">
-            Results for {someCtx.town}, {someCtx.flatType}, {someCtx.flatModel}
-          </h1>
+    <div>
+      <div className="results-header">
+        <h4>Search Results</h4>
+
+        <hr />
+
+        <div className="row">
+          <div className="col">
+            <p>Town</p>
+          </div>
+          <div className="col">
+            <p>{someCtx.town}</p>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col">
+            <p>Flat Type</p>
+          </div>
+          <div className="col">
+            <p>{someCtx.flatType}</p>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col">
+            <p>Flat Model</p>
+          </div>
+          <div className="col">
+            <p>{someCtx.flatModel}</p>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col">
+            <p>Total Records Found</p>
+          </div>
+          <div className="col">
+            {someCtx.post.length !== 0 ? (
+              <p>{someCtx.post.length} records</p>
+            ) : (
+              ""
+            )}
+          </div>
         </div>
       </div>
 
       <Data checkResultFound={checkResultFound()} />
+
       <br />
 
-      <Table striped size="sm">
-        {resultFound ? printHeaders() : ""}
-        {printResults()}
-      </Table>
+      <div style={{ height: "101vh" }}>
+        <DataGrid
+          rows={someCtx.post}
+          columns={columns}
+          autoPageSize={true}
+          checkboxSelection={true}
+          // selectionModel={savedSelections}
+          onSelectionModelChange={(ids) => onRowsSelectionHandle(ids)}
+        />
+      </div>
+
+      <br />
 
       <div className="row">
-        {/* <div className="col d-flex justify-content-center">
-          <Button variant="success">Show More</Button>
-        </div> */}
         <div className="col d-flex justify-content-center">
-          <NavLink to="/Search">
+          <Button variant="success" onClick={saveUserSelectionsToBackend}>
+            Save Selections
+          </Button>
+          <div className="col"></div>
+          <NavLink to="/search">
             <Button variant="danger" onClick={searchAgain}>
               Search Again
             </Button>
           </NavLink>
+          <br />
         </div>
       </div>
-      <div className="footer d-flex align-items-end">
-        <div className="container centered">
-          <h6>Created by Azheem</h6>
-        </div>
-      </div>
+
+      <br />
     </div>
   );
 };
