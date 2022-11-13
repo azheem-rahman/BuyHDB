@@ -292,7 +292,7 @@ const createListingUser = async (req, res) => {
     console.error(err.message);
     res.status(400).json({
       status: "error",
-      message: `failed to update user details for user ${req.body.username}`,
+      message: `failed to create new saved listing for user ${req.body.username}`,
     });
   }
 };
