@@ -15,7 +15,7 @@ const NavBar = () => {
 
   return (
     <Container>
-      <Navbar fixed="top" expand="sm" bg="light" variant="light">
+      <Navbar sticky="top" expand="sm" variant="light">
         <Container>
           <Navbar.Brand href="/homepage">
             <img className={styles.navbarbuyhdblogo} src={BuyHDBLogo2} alt="" />
