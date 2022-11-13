@@ -26,7 +26,7 @@ function App() {
   //   const [compareFirst, setCompareFirst] = useState("");
   //   const [compareSecond, setCompareSecond] = useState("");
 
-  const [username, setUsername] = useState("");
+  const [currentUsername, setCurrentUsername] = useState("");
   const [password, setPassword] = useState("");
 
   return (
@@ -42,8 +42,8 @@ function App() {
         setSearchCriteria,
         post,
         setPost,
-        username,
-        setUsername,
+        currentUsername,
+        setCurrentUsername,
         password,
         setPassword,
       }}
@@ -53,11 +53,11 @@ function App() {
           <Route exact path="/" element={<Navigate replace to="/login" />} />
           <Route path="/login" element={<PageLanding />} />
           <Route path="/create-account" element={<PageCreateAccount />} />
-          <Route path="/Homepage" element={<PageHome />} />
-          <Route path="/Search" element={<PageSearch />} />
-          <Route path="/Results" element={<PageResults />} />
-          <Route path="/Compare" element={<PageCompare />} />
-          <Route path="/Resources" element={<PageResources />} />
+          <Route path="/homepage" element={<PageHome />} />
+          <Route path="/search" element={<PageSearch />} />
+          <Route path="/results" element={<PageResults />} />
+          <Route path="/compare" element={<PageCompare />} />
+          <Route path="/resources" element={<PageResources />} />
         </Routes>
       </div>
     </SomeContext.Provider>

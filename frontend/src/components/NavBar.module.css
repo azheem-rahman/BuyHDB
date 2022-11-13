@@ -1,5 +1,10 @@
 .navbar {
-  height: 3rem;
+  height: 2rem;
+  border: 2px solid black;
+}
+
+.navbarbuyhdblogo {
+  height: 2rem;
 }
 
 .navbar nav {
@@ -19,6 +24,7 @@
 .navbar li {
   margin: 0 1rem;
   width: 10rem;
+  border: 2px solid red;
 }
 
 .navbar a {

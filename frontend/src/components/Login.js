@@ -1,10 +1,13 @@
-import React, { useState, useRef } from "react";
+import React, { useContext, useState, useRef } from "react";
 import { Navigate, NavLink } from "react-router-dom";
 
 import LoginCreateAccountSideImage from "../assets/LoginCreateAccountSideImage.jpg";
 import BuyHDBLogo2 from "../assets/BuyHDBLogo2.jpg";
+import SomeContext from "../context/some-context";
 
 const Login = () => {
+  const someCtx = useContext(SomeContext);
+
   const inputUsernameRef = useRef();
   const inputPasswordRef = useRef();
 
@@ -38,6 +41,7 @@ const Login = () => {
       // successful login
       if (response.status === "ok") {
         setSuccessfulLogin(true);
+        someCtx.setCurrentUsername(inputUsernameRef.current.value);
       }
       // unsuccessful login
       else {
@@ -123,7 +127,7 @@ const Login = () => {
           </div>
         </div>
       </div>
-      {successfulLogin && <Navigate to="/Homepage" />}
+      {successfulLogin && <Navigate to="/homepage" />}
     </div>
   );
 };
