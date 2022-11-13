@@ -54,6 +54,15 @@ li {
   height: 40vh;
 }
 
+.searchpage-resultspage-header {
+  color: var(--lightGrey);
+  background-image: url("./assets/ResaleFlatPricesHeaderBackground.jpg");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 40vh;
+}
+
 .header {
   border: 2px solid black;
 }
@@ -64,7 +73,7 @@ li {
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
-  height: 40vh;
+  height: 30vh;
 }
 
 .landing-page-background {

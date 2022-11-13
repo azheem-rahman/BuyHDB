@@ -121,6 +121,11 @@ const Results = () => {
           </NavLink>
         </div>
       </div>
+      <div className="footer d-flex align-items-end">
+        <div className="container centered">
+          <h6>Created by Azheem</h6>
+        </div>
+      </div>
     </div>
   );
 };

@@ -3,7 +3,7 @@ import styles from "./ResaleFlatPricesHeader.module.css";
 
 const ResaleFlatPricesHeader = () => {
   return (
-    <div className="container">
+    <div>
       <div className={styles.resale_flat_prices_header}>
         <h4>Resale Flat Prices</h4>
         <p>

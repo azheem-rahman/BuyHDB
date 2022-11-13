@@ -14,24 +14,23 @@ const NavBar = () => {
   const someCtx = useContext(SomeContext);
 
   return (
-    <Container>
-      <Navbar sticky="top" expand="sm" variant="light">
-        <Container>
-          <Navbar.Brand href="/homepage">
-            <img className={styles.navbarbuyhdblogo} src={BuyHDBLogo2} alt="" />
-          </Navbar.Brand>
+    <Navbar className="navbar-static-top" expand="sm" variant="light">
+      <Container>
+        <Navbar.Brand href="/homepage">
+          <img className={styles.navbarbuyhdblogo} src={BuyHDBLogo2} alt="" />
+        </Navbar.Brand>
 
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="ms-auto">
-              <Nav.Link href="/search">Search</Nav.Link>
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="ms-auto">
+            <Nav.Link href="/search">Search</Nav.Link>
 
-              <Nav.Link href="/resources">Resources</Nav.Link>
+            <Nav.Link href="/resources">Resources</Nav.Link>
 
-              <Nav.Link href="#">Calculator</Nav.Link>
+            <Nav.Link href="#">Calculator</Nav.Link>
 
-              {/* <NavDropdown title="Dropdown" id="basic-nav-dropdown">
+            {/* <NavDropdown title="Dropdown" id="basic-nav-dropdown">
                 <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
                 <NavDropdown.Item href="#action/3.2">
                   Another action
@@ -44,12 +43,11 @@ const NavBar = () => {
                   Separated link
                 </NavDropdown.Item>
               </NavDropdown> */}
-              <Nav.Link href="#">Hi, {someCtx.currentUsername}</Nav.Link>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-    </Container>
+            <Nav.Link href="#">Hi, {someCtx.currentUsername}</Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 };
 

@@ -8,6 +8,7 @@ import Form from "react-bootstrap/Form";
 import FormLabel from "react-bootstrap/esm/FormLabel";
 
 import styles from "./Search.module.css";
+import NavBar from "./NavBar";
 
 const Search = () => {
   const someCtx = useContext(SomeContext);
@@ -187,60 +188,58 @@ const Search = () => {
 
   return (
     <div>
-      <div className="container">
-        <Form className={styles.searchForm}>
-          <Form.Group className="mb-3" controlId="formSelectTown">
-            <div className="row">
-              <div className="col">
-                <Form.Label>Select Town</Form.Label>
-              </div>
-              <div className="col">
-                <Form.Select size="sm" onChange={handleTownClick}>
-                  <option> </option>
-                  {townOptions.map((item, index) => {
-                    return (
-                      <option key={index} value={item}>
-                        {item}
-                      </option>
-                    );
-                  })}
-                </Form.Select>
-              </div>
+      <Form className={styles.searchForm}>
+        <Form.Group className="mb-3" controlId="formSelectTown">
+          <div className="row">
+            <div className="col">
+              <Form.Label>Select Town</Form.Label>
             </div>
-            <br />
-
-            <div className="row">
-              <div className="col">
-                <FormLabel>Select Flat Type</FormLabel>
-              </div>
-              <div className="col">
-                <Form.Select size="sm" onChange={handleFlatTypeClick}>
-                  <option> </option>
-                  {flatTypeOptions.map((item, index) => {
-                    return <option key={index}>{item}</option>;
-                  })}
-                </Form.Select>
-              </div>
+            <div className="col">
+              <Form.Select size="sm" onChange={handleTownClick}>
+                <option> </option>
+                {townOptions.map((item, index) => {
+                  return (
+                    <option key={index} value={item}>
+                      {item}
+                    </option>
+                  );
+                })}
+              </Form.Select>
             </div>
-            <br />
+          </div>
+          <br />
 
-            <div className="row">
-              <div className="col">
-                <FormLabel>Select Flat Model</FormLabel>
-              </div>
-              <div className="col">
-                <Form.Select size="sm" onChange={handleFlatModelClick}>
-                  <option> </option>
-                  {someCtx.flatType ? displayFlatModelOptions() : ""}
-                </Form.Select>
-              </div>
+          <div className="row">
+            <div className="col">
+              <FormLabel>Select Flat Type</FormLabel>
             </div>
-            <br />
-          </Form.Group>
-        </Form>
+            <div className="col">
+              <Form.Select size="sm" onChange={handleFlatTypeClick}>
+                <option> </option>
+                {flatTypeOptions.map((item, index) => {
+                  return <option key={index}>{item}</option>;
+                })}
+              </Form.Select>
+            </div>
+          </div>
+          <br />
 
-        {someCtx.searchCriteria ? <Navigate to="/Results" /> : ""}
-      </div>
+          <div className="row">
+            <div className="col">
+              <FormLabel>Select Flat Model</FormLabel>
+            </div>
+            <div className="col">
+              <Form.Select size="sm" onChange={handleFlatModelClick}>
+                <option> </option>
+                {someCtx.flatType ? displayFlatModelOptions() : ""}
+              </Form.Select>
+            </div>
+          </div>
+          <br />
+        </Form.Group>
+      </Form>
+
+      {someCtx.searchCriteria ? <Navigate to="/Results" /> : ""}
     </div>
   );
 };
