@@ -257,6 +257,14 @@ const createListingUser = async (req, res) => {
     // console.log(userID.rows[0].user_id);
     const userID = getUserID.rows[0].user_id;
 
+    // check for duplicates (check if user has previously saved the same listing)
+    const duplicateFound = await pool.query(
+      `SELECT * FROM saved_listings
+      WHERE user_id = ${userID}`
+    );
+
+    console.log(duplicateFound.rows);
+
     // on frontend, user clicks on heart icon => take in the data from frontend into req.body
     // pass req.body to create new listing row in saved_listings table
     await pool.query(
@@ -269,7 +277,9 @@ const createListingUser = async (req, res) => {
           saved_resale_price,
           saved_remaining_lease,
           saved_flat_type,
-          saved_flat_model
+          saved_flat_model,
+          saved_town,
+          saved_listing_hdb_id
           ) 
           VALUES (
             '${userID}',
@@ -280,7 +290,9 @@ const createListingUser = async (req, res) => {
             '${req.body.savedResalePrice}',
             '${req.body.savedRemainingLease}',
             '${req.body.savedFlatType}',
-            '${req.body.savedFlatModel}'
+            '${req.body.savedFlatModel}',
+            '${req.body.savedTown}',
+            '${req.body.savedHDBListingID}'
             );`
     );
 
