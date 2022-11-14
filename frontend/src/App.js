@@ -10,6 +10,7 @@ import PageResources from "./pages/PageResources";
 import PageResults from "./pages/PageResults";
 import PageLanding from "./pages/PageLanding";
 import PageCreateAccount from "./pages/PageCreateAccount";
+import PageUserSavedListings from "./pages/PageUserSavedListings";
 
 function App() {
   const [town, setTown] = useState("");
@@ -25,6 +26,8 @@ function App() {
   // for comparison feature
   //   const [compareFirst, setCompareFirst] = useState("");
   //   const [compareSecond, setCompareSecond] = useState("");
+
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
 
   const [currentUsername, setCurrentUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -50,7 +53,13 @@ function App() {
     >
       <div className="container-fluid gx-0">
         <Routes>
-          <Route exact path="/" element={<Navigate replace to="/login" />} />
+          <Route
+            exact
+            path="/"
+            element={
+              <Navigate replace to={userLoggedIn ? "/homepage" : "/login"} />
+            }
+          />
           <Route path="/login" element={<PageLanding />} />
           <Route path="/create-account" element={<PageCreateAccount />} />
           <Route path="/homepage" element={<PageHome />} />
@@ -58,6 +67,10 @@ function App() {
           <Route path="/results" element={<PageResults />} />
           <Route path="/compare" element={<PageCompare />} />
           <Route path="/resources" element={<PageResources />} />
+          <Route
+            path="/user-saved-listings"
+            element={<PageUserSavedListings />}
+          />
         </Routes>
       </div>
     </SomeContext.Provider>
