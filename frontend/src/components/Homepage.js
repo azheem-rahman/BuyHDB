@@ -22,7 +22,7 @@ const Homepage = () => {
               <h3>Welcome back, {someCtx.currentUsername}!</h3>
             </div>
             <div className="row centered">
-              <h4>Your one stop website for all things HBD</h4>
+              <h4>Your one stop website for all things HDB</h4>
             </div>
             <div className="row">
               <div className="col centered">
