@@ -1,8 +1,11 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { Form, FormLabel } from "react-bootstrap";
 import { Navigate } from "react-router-dom";
+import SomeContext from "../context/some-context";
 
 const CreateAccount = () => {
+  const someCtx = useContext(SomeContext);
+
   const inputUsernameRef = useRef();
   const inputPasswordRef = useRef();
   const inputConfirmPasswordRef = useRef();
@@ -234,6 +237,7 @@ const CreateAccount = () => {
       // proceed to homepage
       if (response.status === "ok") {
         setSuccessfulCreateAccount(true);
+        someCtx.setCurrentUsername(inputUsernameRef.current.value);
       }
     } catch (err) {
       console.log(err.message);
