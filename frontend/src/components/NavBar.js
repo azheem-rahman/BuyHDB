@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import styles from "./NavBar.module.css";
 
 import BuyHDBLogo2 from "../assets/BuyHDBLogo2.jpg";
@@ -24,26 +24,42 @@ const NavBar = () => {
 
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <Nav.Link href="/search">Search</Nav.Link>
-
-            <Nav.Link href="/resources">Resources</Nav.Link>
-
-            <Nav.Link href="#">Calculator</Nav.Link>
+            <Nav.Link as={Link} to="/search">
+              Search
+            </Nav.Link>
+            <Nav.Link as={Link} to="/resources">
+              Resources
+            </Nav.Link>
+            {/* <Nav.Link as={Link} to="/calculator">
+              Calculator
+            </Nav.Link> */}
 
             {/* <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-                <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.2">
-                  Another action
-                </NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.3">
-                  Something
-                </NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item href="#action/3.4">
-                  Separated link
-                </NavDropdown.Item>
-              </NavDropdown> */}
-            <Nav.Link href="#">Hi, {someCtx.currentUsername}</Nav.Link>
+              <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.2">
+                Another action
+              </NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item href="#action/3.4">
+                Separated link
+              </NavDropdown.Item>
+            </NavDropdown> */}
+
+            <NavDropdown
+              title={`Hi, ${someCtx.currentUsername}`}
+              id="basic-nav-dropdown"
+            >
+              <NavDropdown.Item as={Link} to="/user-saved-listings">
+                View Saved Listings
+              </NavDropdown.Item>
+
+              <NavDropdown.Divider />
+
+              <NavDropdown.Item as={Link} to="/">
+                Logout
+              </NavDropdown.Item>
+            </NavDropdown>
           </Nav>
         </Navbar.Collapse>
       </Container>
