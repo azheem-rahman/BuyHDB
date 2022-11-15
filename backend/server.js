@@ -25,7 +25,7 @@ app.put("/user-create-delete-request", db.createDeleteAccountRequest);
 app.get("/admin-get-all-user-accounts", db.getAllUsersAccounts);
 app.get("/admin-get-all-user-details", db.getAllUsersDetails);
 app.get("/admin-get-all-users-saved-listings", db.getAllUsersAllSavedListings);
-// app.delete("/admin-delete-user-saved-listing");
+app.delete("/admin-delete-user-saved-listing", db.deleteOneSavedListing);
 app.put("/admin-create-account", db.createAdmin);
 app.post("/admin-login", db.loginAdmin);
 app.get("/admin-get-delete-requests", db.getAllDeleteRequests);
