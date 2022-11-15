@@ -453,6 +453,55 @@ const getAllUsersAccounts = async (req, res) => {
   }
 };
 
+// ============ Edit User Account Login Details by Admin ==================== //
+const updateUserAccount = async (req, res) => {
+  try {
+    // on frontend, Admin fills up a form => form provides req.body = {user_id, newUsername, newPassword} to backend
+
+    // check to see if newUsername already taken to prevent duplicates
+    const usernameExists = await pool.query(
+      `SELECT username FROM users_accounts
+        WHERE username = '${req.body.newUsername}';`
+    );
+    // console.log(data);
+
+    if (usernameExists.rowCount) {
+      // if username already exists, dont update username and respond with error
+      res.json({ status: "error", message: "new username taken" });
+    } else {
+      // if username does not exist, proceed to update user account below:
+
+      // update username
+      await pool.query(
+        `UPDATE users_accounts 
+        SET username = ${req.body.newUsername}
+        WHERE user_id = ${req.body.user_id}`
+      );
+
+      // add in bcrypt to newPassword
+      const password = await bcrypt.hash(req.body.newPassword, 12);
+
+      // update password
+      await pool.query(
+        `UPDATE users_accounts 
+        SET password = ${password}
+        WHERE user_id = ${req.body.user_id}`
+      );
+
+      res.json({
+        status: "ok",
+        message: `user ${req.body.user_id} with new username: ${req.body.newUsername} and password updated successfully`,
+      });
+    }
+  } catch (err) {
+    console.error(err.message);
+    res.status(400).json({
+      status: "error",
+      message: `failed to update user account ${req.body.user_id}`,
+    });
+  }
+};
+
 // ========================== Get All User Details ========================== //
 const getAllUsersDetails = async (req, res) => {
   try {
@@ -633,7 +682,7 @@ const deleteUserAccountByAdmin = async (req, res) => {
   }
 };
 
-// ========== Using Admin Account to Read All Accounts Deletion Request ============ //
+// ========== Using Admin Account to Read All Accounts Deletion Requests ============ //
 const getAllDeleteRequests = async (req, res) => {
   try {
     const deleteRequestsFound = await pool.query(
@@ -668,6 +717,7 @@ module.exports = {
   deleteAllSavedListings,
   createDeleteAccountRequest,
   getAllUsersAccounts,
+  updateUserAccount,
   getAllUsersDetails,
   getAllUsersAllSavedListings,
   createAdmin,
