@@ -16,7 +16,7 @@ const NavBar = () => {
   return (
     <Navbar className="navbar-static-top" expand="sm" variant="light">
       <Container>
-        <Navbar.Brand href="/homepage">
+        <Navbar.Brand as={Link} to="/homepage">
           <img className={styles.navbarbuyhdblogo} src={BuyHDBLogo2} alt="" />
         </Navbar.Brand>
 
