@@ -99,6 +99,7 @@ const AdminUserAccountsOverview = () => {
   useEffect(() => {
     getUserAccountsLoginDetails();
     getUserPersonalDetails();
+    getAllUsersAllSavedListings();
   }, []);
 
   // ========================================================================= //
@@ -150,11 +151,99 @@ const AdminUserAccountsOverview = () => {
   // ================== USER ACCOUNTS SAVED LISTINGS PORTION ================= //
   // ========================================================================= //
   const [userSavedListings, setUserSavedListings] = useState([]);
-  const [deleteUserSavedListingsSelected, setDeleteUserSavedListingsSelected] =
-    useState([]);
+  const [
+    deleteUserSavedListingsSelection,
+    setDeleteUserSavedListingsSelection,
+  ] = useState([]);
 
-  // to track and setDeleteUserSavedListingsSelected to rows selected by Admin
-  const onRowsSelectionHandleDeleteUserSavedListings = (rowIDs) => {};
+  const columnsUserSavedListings = [
+    { field: "saved_listing_id", headerName: "Saved Listing ID" },
+    { field: "username", headerName: "Username" },
+    { field: "saved_listing_hdb_id", headerName: "Saved Listing HDB ID" },
+    { field: "saved_town", headerName: "Town" },
+    { field: "saved_flat_type", headerName: "Flat Type" },
+    { field: "saved_flat_model", headerName: "Flat Model" },
+    { field: "saved_street_name", headerName: "Street Name", flex: 1 },
+    { field: "saved_block", headerName: "Block" },
+    { field: "saved_storey_range", headerName: "Storey Range", flex: 1 },
+    { field: "saved_floor_area_sqm", headerName: "Floor Area" },
+    { field: "saved_resale_price", headerName: "Resale Price" },
+    { field: "saved_remaining_lease", headerName: "Remaining Lease", flex: 1 },
+  ];
+
+  // GET all saved listings by all users
+  const getAllUsersAllSavedListings = async () => {
+    const url = "http://127.0.0.1:5001/admin-get-all-users-saved-listings";
+
+    try {
+      const res = await fetch(url, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const response = await res.json();
+
+      console.log(response);
+
+      response.map((savedListing) => {
+        return setUserSavedListings((prevState) => [
+          ...prevState,
+          savedListing,
+        ]);
+      });
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  // to track and setDeleteUserSavedListingsSelection to rows selected by Admin
+  const onRowsSelectionHandleDeleteUserSavedListings = (rowIDs) => {
+    const selectedRowData = rowIDs.map((rowID) =>
+      userSavedListings.find((row) => row.saved_listing_id === rowID)
+    );
+    console.log(selectedRowData);
+    setDeleteUserSavedListingsSelection(selectedRowData);
+  };
+
+  // to delete saved listings (in backend) selected by Admin
+  const deleteSavedListingToBackend = async () => {
+    const url = "http://127.0.0.1:5001/admin-delete-user-saved-listing";
+
+    try {
+      // Delete ONE saved listing
+      const deleteOneSavedListingToBackend = async (url, oneSavedListing) => {
+        const body = {
+          username: oneSavedListing.username,
+          savedListingID: oneSavedListing.saved_listing_id,
+        };
+
+        const res = await fetch(url, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        const response = await res.json();
+        console.log(response);
+      };
+
+      deleteUserSavedListingsSelection.map((savedListing) => {
+        return deleteOneSavedListingToBackend(url, savedListing);
+      });
+
+      // update frontend deleteUserSavedListingsSelection so that datagrid is updated
+      setUserSavedListings(
+        userSavedListings.filter(
+          (row) =>
+            deleteUserSavedListingsSelection.filter(
+              (selectedRow) =>
+                selectedRow.saved_listing_id === row.saved_listing_id
+            ).length < 1
+        )
+      );
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
 
   return (
     <div>
@@ -215,7 +304,33 @@ const AdminUserAccountsOverview = () => {
 
       {/* See all user accounts saved listings */}
       <div className="container">
+        <hr />
         <h4>All Saved Listings</h4>
+        <hr />
+
+        <div style={{ height: "101vh" }}>
+          <DataGrid
+            getRowId={(row) => row.saved_listing_id}
+            rows={userSavedListings}
+            columns={columnsUserSavedListings}
+            autoPageSize={true}
+            checkboxSelection={true}
+            onSelectionModelChange={(rowIDs) =>
+              onRowsSelectionHandleDeleteUserSavedListings(rowIDs)
+            }
+          />
+        </div>
+        <br />
+        <div className="row">
+          <div className="col d-flex justify-content-center">
+            <Button variant="warning" onClick={deleteSavedListingToBackend}>
+              Delete Saved Listings
+            </Button>
+            <div className="col"></div>
+          </div>
+        </div>
+
+        <br />
       </div>
     </div>
   );
