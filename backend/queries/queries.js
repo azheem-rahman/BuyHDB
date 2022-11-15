@@ -14,21 +14,6 @@ const pool = new Pool({
 // ============================= USERS PORTION ============================= //
 // ========================================================================= //
 
-const getAllUsersAccounts = async (req, res) => {
-  try {
-    const data = await pool.query(
-      "SELECT username, password FROM users_accounts;"
-    );
-    res.json({ data });
-    console.log(data.rows); // to access the table data only from response
-  } catch (err) {
-    console.error(err.message);
-    res
-      .status(400)
-      .json({ status: "error", message: "failed to GET all users accounts" });
-  }
-};
-
 // ========================== Create User Account ========================== //
 const createUser = async (req, res) => {
   // console.log(req.body);
@@ -453,6 +438,20 @@ const createDeleteAccountRequest = async (req, res) => {
 // ========================================================================= //
 // ============================= ADMIN PORTION ============================= //
 // ========================================================================= //
+
+// ========================== Get All User Accounts ========================= //
+const getAllUsersAccounts = async (req, res) => {
+  try {
+    const data = await pool.query("SELECT * FROM users_accounts;");
+    res.json(data.rows);
+    console.log(data.rows); // to access the table data only from response
+  } catch (err) {
+    console.error(err.message);
+    res
+      .status(400)
+      .json({ status: "error", message: "failed to GET all users accounts" });
+  }
+};
 
 // ========================== Create Admin Account ========================= //
 const createAdmin = async (req, res) => {

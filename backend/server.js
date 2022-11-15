@@ -11,8 +11,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.get("/users", db.getAllUsersAccounts);
-
 app.put("/user-create-account", db.createUser);
 app.post("/user-login", db.loginUser);
 app.put("/user-create-details", db.createDetailsUser);
@@ -24,6 +22,7 @@ app.delete("/user-delete-one-saved-listing", db.deleteOneSavedListing);
 app.delete("/user-delete-all-saved-listings", db.deleteAllSavedListings);
 app.put("/user-create-delete-request", db.createDeleteAccountRequest);
 
+app.get("/admin-get-all-user-accounts", db.getAllUsersAccounts);
 app.put("/admin-create-account", db.createAdmin);
 app.post("/admin-login", db.loginAdmin);
 app.get("/admin-get-delete-requests", db.getAllDeleteRequests);
