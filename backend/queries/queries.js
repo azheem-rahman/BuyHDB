@@ -478,6 +478,36 @@ const getAllUsersDetails = async (req, res) => {
   }
 };
 
+// ===================== Get All Saved Listings by All Users ======================= //
+const getAllUsersAllSavedListings = async (req, res) => {
+  try {
+    const data = await pool.query(
+      `SELECT saved_listings.saved_listing_id AS saved_listing_id, 
+      users_accounts.username AS username,
+      saved_listings.saved_listing_hdb_id AS saved_listing_hdb_id,
+      saved_listings.saved_town AS saved_town,
+      saved_listings.saved_flat_type AS saved_flat_type,
+      saved_listings.saved_flat_model AS saved_flat_model,
+      saved_listings.saved_street_name AS saved_street_name,
+      saved_listings.saved_block AS saved_block,
+      saved_listings.saved_storey_range AS saved_storey_range,
+      saved_listings.saved_floor_area_sqm AS saved_floor_area_sqm,
+      saved_listings.saved_resale_price AS saved_resale_price,
+      saved_listings.saved_remaining_lease AS saved_remaining_lease
+      FROM saved_listings
+      JOIN users_accounts ON users_accounts.user_id=saved_listings.user_id`
+    );
+    res.json(data.rows);
+    console.log(data.rows); // to access the table data only from response
+  } catch (err) {
+    console.error(err.message);
+    res.status(400).json({
+      status: "error",
+      message: "failed to GET all users saved listings",
+    });
+  }
+};
+
 // ========================== Create Admin Account ========================= //
 const createAdmin = async (req, res) => {
   // console.log(req.body);
@@ -639,6 +669,7 @@ module.exports = {
   createDeleteAccountRequest,
   getAllUsersAccounts,
   getAllUsersDetails,
+  getAllUsersAllSavedListings,
   createAdmin,
   loginAdmin,
   getAllDeleteRequests,
