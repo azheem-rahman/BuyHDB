@@ -7,15 +7,6 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "react-bootstrap";
 
 const AdminUserAccountsOverview = () => {
-  const [userPersonalDetails, setUserPersonalDetails] = useState([]);
-
-  const [userSavedListings, setUserSavedListings] = useState([]);
-  const [deleteUserSavedListingsSelected, setDeleteUserSavedListingsSelected] =
-    useState([]);
-
-  // to track and setDeleteUserSavedListingsSelected to rows selected by Admin
-  const onRowsSelectionHandleDeleteUserSavedListings = (rowIDs) => {};
-
   // ========================================================================= //
   // =================== USER ACCOUNTS LOGIN DETAILS PORTION ================= //
   // ========================================================================= //
@@ -102,18 +93,81 @@ const AdminUserAccountsOverview = () => {
     }
   };
 
-  // to getUserAccountsLoginDetails from backend at mount and unmount
+  // to getUserAccountsLoginDetails
+  // to getUserPersonalDetails
+  // from backend at mount and unmount
   useEffect(() => {
     getUserAccountsLoginDetails();
+    getUserPersonalDetails();
   }, []);
+
+  // ========================================================================= //
+  // ================== USER ACCOUNTS PERSONAL DETAILS PORTION =============== //
+  // ========================================================================= //
+  const [userPersonalDetails, setUserPersonalDetails] = useState([]);
+
+  const columnsUserPersonalDetails = [
+    { field: "detail_id", headerName: "Detail ID" },
+    { field: "username", headerName: "Username" },
+    { field: "given_name", headerName: "Given Name" },
+    { field: "current_town", headerName: "Town" },
+    { field: "current_flat_type", headerName: "Flat Type" },
+    { field: "current_flat_model", headerName: "Flat Model" },
+    {
+      field: "current_monthly_combined_income",
+      headerName: "Monthly Combined Income",
+      flex: 1,
+    },
+    { field: "current_younger_age", headerName: "Younger Age" },
+  ];
+
+  // GET all user personal details
+  const getUserPersonalDetails = async () => {
+    const url = "http://127.0.0.1:5001/admin-get-all-user-details";
+
+    try {
+      const res = await fetch(url, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const response = await res.json();
+
+      console.log(response);
+
+      response.map((userDetail) => {
+        return setUserPersonalDetails((prevState) => [
+          ...prevState,
+          userDetail,
+        ]);
+      });
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  // ========================================================================= //
+  // ================== USER ACCOUNTS SAVED LISTINGS PORTION ================= //
+  // ========================================================================= //
+  const [userSavedListings, setUserSavedListings] = useState([]);
+  const [deleteUserSavedListingsSelected, setDeleteUserSavedListingsSelected] =
+    useState([]);
+
+  // to track and setDeleteUserSavedListingsSelected to rows selected by Admin
+  const onRowsSelectionHandleDeleteUserSavedListings = (rowIDs) => {};
 
   return (
     <div>
       <AdminNavBar />
 
+      <div className="container centered">
+        <h2>Admin User Accounts Overview</h2>
+      </div>
+
+      {/* See all user accounts (username and password) */}
       <div className="container">
         <hr />
-        <h4>Admin User Accounts Overview</h4>
+        <h4>All User Accounts Login Details</h4>
         <hr />
 
         <div style={{ height: "101vh" }}>
@@ -143,14 +197,26 @@ const AdminUserAccountsOverview = () => {
         <br />
       </div>
 
-      {/* See all user accounts (username and password) */}
-      <h2>All User Accounts Login Details</h2>
-
       {/* See all user accounts details */}
-      <h2>All User Accounts Personal Details</h2>
+      <div className="container">
+        <hr />
+        <h4>All User Accounts Personal Details</h4>
+        <hr />
+
+        <div style={{ height: "101vh" }}>
+          <DataGrid
+            getRowId={(row) => row.detail_id}
+            rows={userPersonalDetails}
+            columns={columnsUserPersonalDetails}
+            autoPageSize={true}
+          />
+        </div>
+      </div>
 
       {/* See all user accounts saved listings */}
-      <h2>All Saved Listings</h2>
+      <div className="container">
+        <h4>All Saved Listings</h4>
+      </div>
     </div>
   );
 };
