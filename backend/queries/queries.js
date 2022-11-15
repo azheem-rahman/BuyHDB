@@ -461,21 +461,21 @@ const updateUserAccount = async (req, res) => {
     // check to see if newUsername already taken to prevent duplicates
     const usernameExists = await pool.query(
       `SELECT username FROM users_accounts
-        WHERE username = '${req.body.newUsername}';`
+      WHERE username = '${req.body.newUsername}';`
     );
-    // console.log(data);
+    // console.log(usernameExists);
 
     if (usernameExists.rowCount) {
-      // if username already exists, dont update username and respond with error
+      // if newUsername already exists, dont update username and respond with error
       res.json({ status: "error", message: "new username taken" });
     } else {
-      // if username does not exist, proceed to update user account below:
+      // if newUsername does not exist, proceed to update user account below:
 
       // update username
       await pool.query(
-        `UPDATE users_accounts 
-        SET username = ${req.body.newUsername}
-        WHERE user_id = ${req.body.user_id}`
+        `UPDATE users_accounts
+        SET username = '${req.body.newUsername}'
+        WHERE user_id = '${req.body.user_id}'`
       );
 
       // add in bcrypt to newPassword
@@ -483,14 +483,14 @@ const updateUserAccount = async (req, res) => {
 
       // update password
       await pool.query(
-        `UPDATE users_accounts 
-        SET password = ${password}
-        WHERE user_id = ${req.body.user_id}`
+        `UPDATE users_accounts
+        SET password = '${password}'
+        WHERE user_id = '${req.body.user_id}'`
       );
 
       res.json({
         status: "ok",
-        message: `user ${req.body.user_id} with new username: ${req.body.newUsername} and password updated successfully`,
+        message: `user ${req.body.user_id} with new username (${req.body.newUsername}) and new password updated successfully`,
       });
     }
   } catch (err) {
