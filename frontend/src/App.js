@@ -11,6 +11,12 @@ import PageResults from "./pages/PageResults";
 import PageLanding from "./pages/PageLanding";
 import PageCreateAccount from "./pages/PageCreateAccount";
 import PageUserSavedListings from "./pages/PageUserSavedListings";
+import TestLogin from "./components/TestLogin";
+import PageAdminHome from "./pages/PageAdminHome";
+
+import PageAdminUserAccountsOverview from "./pages/PageAdminUserAccountsOverview";
+import PageAdminUserAccountsRequests from "./pages/PageAdminUserAccountsRequests";
+import PageAdminAccountsOverview from "./pages/PageAdminAccountsOverview";
 
 function App() {
   const [town, setTown] = useState("");
@@ -53,6 +59,7 @@ function App() {
     >
       <div className="container-fluid gx-0">
         <Routes>
+          {/* Routes for User Accounts */}
           <Route
             exact
             path="/"
@@ -71,6 +78,24 @@ function App() {
             path="/user-saved-listings"
             element={<PageUserSavedListings />}
           />
+
+          {/* Routes for Admin Accounts */}
+          <Route path="/admin-homepage" element={<PageAdminHome />} />
+          <Route
+            path="/admin-user-accounts-overview"
+            element={<PageAdminUserAccountsOverview />}
+          />
+          <Route
+            path="/admin-user-accounts-requests"
+            element={<PageAdminUserAccountsRequests />}
+          />
+          <Route
+            path="/admin-accounts-overview"
+            element={<PageAdminAccountsOverview />}
+          />
+
+          {/* Test Route */}
+          <Route path="/test" element={<TestLogin />} />
         </Routes>
       </div>
     </SomeContext.Provider>
