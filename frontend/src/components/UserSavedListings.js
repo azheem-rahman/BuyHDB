@@ -22,7 +22,7 @@ const UserSavedListings = () => {
     { field: "saved_remaining_lease", headerName: "Remaining Lease", flex: 1 },
   ];
 
-  // GET all saved listings under user and set to state
+  // retrieve all saved listings under user and set to state
   const getUserSavedListings = async () => {
     const url = "http://127.0.0.1:5001/user-get-all-saved-listings";
     const body = {
