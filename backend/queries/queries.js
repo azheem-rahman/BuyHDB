@@ -453,6 +453,31 @@ const getAllUsersAccounts = async (req, res) => {
   }
 };
 
+// ========================== Get All User Details ========================== //
+const getAllUsersDetails = async (req, res) => {
+  try {
+    const data = await pool.query(
+      `SELECT users_details.detail_id AS detail_id, 
+        users_accounts.username AS username, 
+        users_details.given_name AS given_name, 
+        users_details.current_town AS current_town, 
+        users_details.current_flat_type AS current_flat_type, 
+        users_details.current_flat_model AS current_flat_model, 
+        users_details.current_monthly_combined_income AS current_monthly_combined_income, 
+        users_details.current_younger_age AS current_younger_age 
+      FROM users_details 
+      JOIN users_accounts ON users_accounts.user_id=users_details.user_id`
+    );
+    res.json(data.rows);
+    console.log(data.rows); // to access the table data only from response
+  } catch (err) {
+    console.error(err.message);
+    res
+      .status(400)
+      .json({ status: "error", message: "failed to GET all users details" });
+  }
+};
+
 // ========================== Create Admin Account ========================= //
 const createAdmin = async (req, res) => {
   // console.log(req.body);
@@ -602,7 +627,6 @@ const getAllDeleteRequests = async (req, res) => {
 };
 
 module.exports = {
-  getAllUsersAccounts,
   createUser,
   loginUser,
   createDetailsUser,
@@ -613,6 +637,8 @@ module.exports = {
   deleteOneSavedListing,
   deleteAllSavedListings,
   createDeleteAccountRequest,
+  getAllUsersAccounts,
+  getAllUsersDetails,
   createAdmin,
   loginAdmin,
   getAllDeleteRequests,
