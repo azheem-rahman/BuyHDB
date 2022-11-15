@@ -157,18 +157,26 @@ const AdminUserAccountsOverview = () => {
   ] = useState([]);
 
   const columnsUserSavedListings = [
-    { field: "saved_listing_id", headerName: "Saved Listing ID" },
-    { field: "username", headerName: "Username" },
-    { field: "saved_listing_hdb_id", headerName: "Saved Listing HDB ID" },
-    { field: "saved_town", headerName: "Town" },
-    { field: "saved_flat_type", headerName: "Flat Type" },
-    { field: "saved_flat_model", headerName: "Flat Model" },
-    { field: "saved_street_name", headerName: "Street Name", flex: 1 },
-    { field: "saved_block", headerName: "Block" },
-    { field: "saved_storey_range", headerName: "Storey Range", flex: 1 },
-    { field: "saved_floor_area_sqm", headerName: "Floor Area" },
-    { field: "saved_resale_price", headerName: "Resale Price" },
-    { field: "saved_remaining_lease", headerName: "Remaining Lease", flex: 1 },
+    { field: "saved_listing_id", headerName: "ID", width: 50 },
+    { field: "username", headerName: "Username", width: 150 },
+    {
+      field: "saved_listing_hdb_id",
+      headerName: "HDB ID",
+      width: 100,
+    },
+    { field: "saved_town", headerName: "Town", width: 200 },
+    { field: "saved_flat_type", headerName: "Flat Type", width: 100 },
+    { field: "saved_flat_model", headerName: "Flat Model", width: 100 },
+    { field: "saved_street_name", headerName: "Street Name", width: 250 },
+    { field: "saved_block", headerName: "Block", width: 100 },
+    { field: "saved_storey_range", headerName: "Storey Range", width: 150 },
+    { field: "saved_floor_area_sqm", headerName: "Floor Area", width: 100 },
+    { field: "saved_resale_price", headerName: "Resale Price", width: 100 },
+    {
+      field: "saved_remaining_lease",
+      headerName: "Remaining Lease",
+      width: 200,
+    },
   ];
 
   // GET all saved listings by all users
