@@ -1,10 +1,10 @@
 import React from "react";
-import AdminHomepage from "../components/AdminHomepage";
+import AdminUserAccountsOverview from "../components/AdminUserAccountsOverview";
 
 const PageAdminHome = () => {
   return (
     <div>
-      <AdminHomepage />
+      <AdminUserAccountsOverview />
     </div>
   );
 };
