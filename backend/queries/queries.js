@@ -11,66 +11,31 @@ const pool = new Pool({
 });
 
 // ========================================================================= //
-// ============================= USERS PORTION ============================= //
+// ===================== SHARED ADMIN AND USERS PORTION ==================== //
 // ========================================================================= //
 
-// ========================== Create User Account ========================== //
-const createUser = async (req, res) => {
-  // console.log(req.body);
-  try {
-    // check to see if user account already exists to prevent duplicates
-    // let usernameExists = false;
-    const usernameExists = await pool.query(
-      `SELECT username FROM users_accounts
-        WHERE username = '${req.body.username}';`
-    );
-    // console.log(data);
-
-    if (usernameExists.rowCount) {
-      // if username already exists, dont create user and respond with error
-      res.json({ status: "error", message: "username taken" });
-    } else {
-      // if username does not exist, proceed to create new user account below
-
-      // add in bcrypt to password
-      const password = await bcrypt.hash(req.body.password, 12);
-
-      // create new user account
-      await pool.query(
-        `INSERT INTO users_accounts(username, password) 
-        VALUES ('${req.body.username}', '${password}');`
-      );
-
-      res.json({
-        status: "ok",
-        message: `user ${req.body.username} created successfully`,
-      });
-    }
-  } catch (err) {
-    console.error(err.message);
-    res.status(400).json({
-      status: "error",
-      message: `failed to create ${req.body.username} user account`,
-    });
-  }
-};
-
-// ========================== Login User Account ========================== //
-const loginUser = async (req, res) => {
+// ========================== Login Account (both user and admin) ========================== //
+const login = async (req, res) => {
   try {
     // check if username is found, if found proceed to login
-
     const usernameFound = await pool.query(
-      `SELECT username FROM users_accounts
+      `SELECT username FROM accounts
       WHERE username = '${req.body.username}';`
     );
-    // console.log(usernameFound);
 
+    // usernameFound.rowCount is 0 if no username found
     if (usernameFound.rowCount !== 0) {
+      const accountTypeFound = await pool.query(
+        `SELECT account_type FROM accounts
+        WHERE username = '${req.body.username}';`
+      );
+
+      const accountType = accountTypeFound.rows[0].account_type;
+
       const passwordFound = await pool.query(
         `SELECT password 
-        FROM users_accounts
-        WHERE username = '${req.body.username}';`
+        FROM accounts
+        WHERE username = '${req.body.username}' AND account_type = '${accountType}';`
       );
       // console.log(passwordFound.rows[0].password);
 
@@ -87,7 +52,8 @@ const loginUser = async (req, res) => {
         // proceed to login
         res.json({
           status: "ok",
-          message: `user ${req.body.username} login successful`,
+          message: `${req.body.username} account login successful`,
+          accountType: accountType,
         });
       } else {
         // respond error unable to login because password does not match
@@ -108,17 +74,60 @@ const loginUser = async (req, res) => {
   }
 };
 
+// ========================================================================= //
+// ============================= USERS PORTION ============================= //
+// ========================================================================= //
+
+// ========================== Create User Account ========================== //
+const createUser = async (req, res) => {
+  try {
+    // check to see if user account already exists to prevent duplicates
+    const usernameExists = await pool.query(
+      `SELECT username FROM accounts
+        WHERE username = '${req.body.username}';`
+    );
+
+    if (usernameExists.rowCount) {
+      // if username already exists, dont create user and respond with error
+      res.json({ status: "error", message: "username taken" });
+    } else {
+      // if username does not exist, proceed to create new user account below
+
+      // add in bcrypt to password
+      const password = await bcrypt.hash(req.body.password, 12);
+
+      // create new user account
+      await pool.query(
+        `INSERT INTO accounts(username, password, account_type) 
+        VALUES ('${req.body.username}', '${password}', 'user');`
+      );
+
+      res.json({
+        status: "ok",
+        message: `user ${req.body.username} created successfully`,
+      });
+    }
+  } catch (err) {
+    console.error(err.message);
+    res.status(400).json({
+      status: "error",
+      message: `failed to create ${req.body.username} user account`,
+    });
+  }
+};
+
 // =========================== Create User Details ========================== //
 const createDetailsUser = async (req, res) => {
   try {
     // after user creates account, will be re-directed to fill in their details
-    // find the user account's user_id based on its username from users_accounts table => set user_id found to userID
+    // find the user account's account_id based on its username from accounts table => set account_id found to userID
     const getUserID = await pool.query(
-      `SELECT user_id FROM users_accounts
-      WHERE username = '${req.body.username}';`
+      `SELECT account_id FROM accounts
+      WHERE username = '${req.body.username}' AND account_type = 'user';`
     );
+    // console.log(getUserID);
+    const userID = getUserID.rows[0].account_id;
     // console.log(userID.rows[0].user_id);
-    const userID = getUserID.rows[0].user_id;
 
     // create a new row inside user_details table
     // where users_details.user_id = users_accounts.user_id = userID found above
@@ -163,11 +172,11 @@ const getDetailsUser = async (req, res) => {
 
     // find the user id based on username
     const getUserID = await pool.query(
-      `SELECT user_id FROM users_accounts
-      WHERE username = '${req.body.username}';`
+      `SELECT account_id FROM accounts
+      WHERE username = '${req.body.username}' AND account_type = 'user';`
     );
     // console.log(userID.rows[0].user_id);
-    const userID = getUserID.rows[0].user_id;
+    const userID = getUserID.rows[0].account_id;
 
     const userDetails = await pool.query(
       `SELECT * FROM users_details
@@ -193,11 +202,11 @@ const updateDetailsUser = async (req, res) => {
 
     // find the user id based on username
     const getUserID = await pool.query(
-      `SELECT user_id FROM users_accounts
-      WHERE username = '${req.body.username}';`
+      `SELECT account_id FROM accounts
+      WHERE username = '${req.body.username}' AND account_type = 'user';`
     );
     // console.log(userID.rows[0].user_id);
-    const userID = getUserID.rows[0].user_id;
+    const userID = getUserID.rows[0].account_id;
 
     // create a new row inside user_details table
     // where users_details.user_id = users_accounts.user_id = userID found above
@@ -236,11 +245,11 @@ const createListingUser = async (req, res) => {
 
     // find the user_id based on username
     const getUserID = await pool.query(
-      `SELECT user_id FROM users_accounts
-      WHERE username = '${req.body.username}';`
+      `SELECT account_id FROM accounts
+      WHERE username = '${req.body.username}' AND account_type = 'user';`
     );
     // console.log(userID.rows[0].user_id);
-    const userID = getUserID.rows[0].user_id;
+    const userID = getUserID.rows[0].account_id;
 
     // check for duplicates (check if user has previously saved the same listing)
     const checkDuplicate = await pool.query(
@@ -307,17 +316,17 @@ const getAllSavedListings = async (req, res) => {
 
     // find the user_id based on username
     const getUserID = await pool.query(
-      `SELECT user_id FROM users_accounts
-      WHERE username = '${req.body.username}';`
+      `SELECT account_id FROM accounts
+      WHERE username = '${req.body.username}' AND account_type = 'user';`
     );
     // console.log(userID.rows[0].user_id);
-    const userID = getUserID.rows[0].user_id;
+    const userID = getUserID.rows[0].account_id;
 
     // check to see if there are saved listing under user_id
     const savedListingsFound = await pool.query(
       `SELECT * FROM saved_listings
-      JOIN users_accounts ON users_accounts.user_id = saved_listings.user_id
-      WHERE users_accounts.user_id = '${userID}';`
+      JOIN accounts ON accounts.account_id = saved_listings.user_id
+      WHERE accounts.account_id = '${userID}';`
     );
     // console.log(
     //   savedListingsFound.rows.map((item, index) => {
@@ -344,11 +353,11 @@ const deleteOneSavedListing = async (req, res) => {
 
     // find the user_id based on username
     const getUserID = await pool.query(
-      `SELECT user_id FROM users_accounts
-      WHERE username = '${req.body.username}';`
+      `SELECT account_id FROM accounts
+      WHERE username = '${req.body.username}' AND account_type = 'user';`
     );
     // console.log(userID.rows[0].user_id);
-    const userID = getUserID.rows[0].user_id;
+    const userID = getUserID.rows[0].account_id;
 
     await pool.query(
       `DELETE FROM saved_listings
@@ -373,11 +382,11 @@ const deleteAllSavedListings = async (req, res) => {
 
     // find the user_id based on username
     const getUserID = await pool.query(
-      `SELECT user_id FROM users_accounts
-      WHERE username = '${req.body.username}';`
+      `SELECT account_id FROM accounts
+      WHERE username = '${req.body.username}' AND account_type = 'user';`
     );
     // console.log(userID.rows[0].user_id);
-    const userID = getUserID.rows[0].user_id;
+    const userID = getUserID.rows[0].account_id;
 
     const deleteAllSavedListingsResults = await pool.query(
       `DELETE FROM saved_listings
@@ -411,11 +420,11 @@ const createDeleteAccountRequest = async (req, res) => {
   try {
     // find the user_id based on username
     const getUserID = await pool.query(
-      `SELECT user_id FROM users_accounts
-      WHERE username = '${req.body.username}';`
+      `SELECT account_id FROM accounts
+      WHERE username = '${req.body.username}' AND account_type = 'user';`
     );
     // console.log(userID.rows[0].user_id);
-    const userID = getUserID.rows[0].user_id;
+    const userID = getUserID.rows[0].account_id;
 
     await pool.query(
       `INSERT INTO delete_requests (user_id)
@@ -442,9 +451,13 @@ const createDeleteAccountRequest = async (req, res) => {
 // ========================== Get All User Accounts ========================= //
 const getAllUsersAccounts = async (req, res) => {
   try {
-    const data = await pool.query("SELECT * FROM users_accounts;");
+    const data = await pool.query(
+      `SELECT * FROM accounts 
+      WHERE account_type = 'user';`
+    );
+
     res.json(data.rows);
-    console.log(data.rows); // to access the table data only from response
+    console.log(data.rows); // to access only the table data from response
   } catch (err) {
     console.error(err.message);
     res
@@ -460,8 +473,8 @@ const updateUserAccount = async (req, res) => {
 
     // check to see if newUsername already taken to prevent duplicates
     const usernameExists = await pool.query(
-      `SELECT username FROM users_accounts
-      WHERE username = '${req.body.newUsername}';`
+      `SELECT username FROM accounts
+      WHERE username = '${req.body.newUsername}' AND account_type = 'user';`
     );
     // console.log(usernameExists);
 
@@ -473,9 +486,9 @@ const updateUserAccount = async (req, res) => {
 
       // update username
       await pool.query(
-        `UPDATE users_accounts
+        `UPDATE accounts
         SET username = '${req.body.newUsername}'
-        WHERE user_id = '${req.body.user_id}'`
+        WHERE account_id = '${req.body.account_id}'`
       );
 
       // add in bcrypt to newPassword
@@ -483,21 +496,21 @@ const updateUserAccount = async (req, res) => {
 
       // update password
       await pool.query(
-        `UPDATE users_accounts
+        `UPDATE accounts
         SET password = '${password}'
-        WHERE user_id = '${req.body.user_id}'`
+        WHERE account_id = '${req.body.account_id}'`
       );
 
       res.json({
         status: "ok",
-        message: `user ${req.body.user_id} with new username (${req.body.newUsername}) and new password updated successfully`,
+        message: `user ${req.body.account_id} with new username (${req.body.newUsername}) and new password updated successfully`,
       });
     }
   } catch (err) {
     console.error(err.message);
     res.status(400).json({
       status: "error",
-      message: `failed to update user account ${req.body.user_id}`,
+      message: `failed to update user account ${req.body.account_id}`,
     });
   }
 };
@@ -507,7 +520,7 @@ const getAllUsersDetails = async (req, res) => {
   try {
     const data = await pool.query(
       `SELECT users_details.detail_id AS detail_id, 
-        users_accounts.username AS username, 
+        accounts.username AS username, 
         users_details.given_name AS given_name, 
         users_details.current_town AS current_town, 
         users_details.current_flat_type AS current_flat_type, 
@@ -515,7 +528,7 @@ const getAllUsersDetails = async (req, res) => {
         users_details.current_monthly_combined_income AS current_monthly_combined_income, 
         users_details.current_younger_age AS current_younger_age 
       FROM users_details 
-      JOIN users_accounts ON users_accounts.user_id=users_details.user_id`
+      JOIN accounts ON accounts.account_id=users_details.user_id`
     );
     res.json(data.rows);
     console.log(data.rows); // to access the table data only from response
@@ -532,7 +545,7 @@ const getAllUsersAllSavedListings = async (req, res) => {
   try {
     const data = await pool.query(
       `SELECT saved_listings.saved_listing_id AS saved_listing_id, 
-      users_accounts.username AS username,
+      accounts.username AS username,
       saved_listings.saved_listing_hdb_id AS saved_listing_hdb_id,
       saved_listings.saved_town AS saved_town,
       saved_listings.saved_flat_type AS saved_flat_type,
@@ -544,7 +557,7 @@ const getAllUsersAllSavedListings = async (req, res) => {
       saved_listings.saved_resale_price AS saved_resale_price,
       saved_listings.saved_remaining_lease AS saved_remaining_lease
       FROM saved_listings
-      JOIN users_accounts ON users_accounts.user_id=saved_listings.user_id`
+      JOIN accounts ON accounts.account_id=saved_listings.user_id`
     );
     res.json(data.rows);
     console.log(data.rows); // to access the table data only from response
@@ -564,8 +577,8 @@ const createAdmin = async (req, res) => {
     // check to see if user account already exists to prevent duplicates
     // let usernameExists = false;
     const usernameExists = await pool.query(
-      `SELECT username FROM administrators_accounts
-      WHERE username = '${req.body.username}';`
+      `SELECT username FROM accounts
+      WHERE username = '${req.body.username}' AND account_type = 'admin';`
     );
     // console.log(data);
 
@@ -580,69 +593,21 @@ const createAdmin = async (req, res) => {
 
       // create new user account
       await pool.query(
-        `INSERT INTO administrators_accounts(username, password) 
-        VALUES ('${req.body.username}', '${password}')`
+        `INSERT INTO accounts(username, password, account_type) 
+        VALUES ('${req.body.username}', '${password}', 'admin')`
       );
 
       res.json({
         status: "ok",
-        message: `user ${req.body.username} created successfully`,
+        message: `admin ${req.body.username} created successfully`,
       });
     }
   } catch (err) {
     console.error(err.message);
     res.status(400).json({
       status: "error",
-      message: `failed to create ${req.body.username} user account`,
+      message: `failed to create ${req.body.username} admin account`,
     });
-  }
-};
-
-// ========================== Login Admin Account ========================= //
-const loginAdmin = async (req, res) => {
-  try {
-    // check if username is found, if found proceed to login
-
-    const usernameFound = await pool.query(
-      `SELECT username FROM administrators_accounts
-      WHERE username = '${req.body.username}'
-      ;`
-    );
-    // console.log(usernameFound);
-
-    if (usernameFound.rowCount !== 0) {
-      const passwordFound = await pool.query(
-        `SELECT password 
-        FROM administrators_accounts
-        WHERE username = '${req.body.username}'`
-      );
-      // console.log(passwordFound.rows[0].password);
-
-      const passwordInDatabase = passwordFound.rows[0].password;
-
-      const passwordMatch = await bcrypt.compare(
-        req.body.password,
-        passwordInDatabase
-      );
-      // console.log(passwordMatch);
-
-      // check if password match
-      if (passwordMatch) {
-        // proceed to login
-        res.json({ status: "ok", message: "login successful" });
-      } else {
-        // respond error unable to login because password does not match
-        res.json({ status: "error", message: "invalid username or password" });
-      }
-    } else {
-      // respond error unable to login because user account does not exist
-      res.json({ status: "error", message: "invalid username or password" });
-    }
-
-    // username not found => respond with error
-  } catch (err) {
-    console.error(err.message);
-    res.status(400).json({ status: "error", message: "failed to login" });
   }
 };
 
@@ -657,16 +622,16 @@ const deleteUserAccountByAdmin = async (req, res) => {
 
     // find the user_id based on username
     const getUserID = await pool.query(
-      `SELECT user_id FROM users_accounts
-      WHERE username = '${req.body.username}';`
+      `SELECT account_id FROM accounts
+      WHERE username = '${req.body.username}' AND account_type = 'user';`
     );
     // console.log(userID.rows[0].user_id);
-    const userID = getUserID.rows[0].user_id;
+    const userID = getUserID.rows[0].account_id;
 
     // delete user account from users_accounts table
     await pool.query(
-      `DELETE FROM users_accounts
-      WHERE user_id = '${userID}'`
+      `DELETE FROM accounts
+      WHERE account_id = '${userID}'`
     );
 
     res.json({
@@ -686,9 +651,9 @@ const deleteUserAccountByAdmin = async (req, res) => {
 const getAllDeleteRequests = async (req, res) => {
   try {
     const deleteRequestsFound = await pool.query(
-      `SELECT users_accounts.user_id, users_accounts.username
-      FROM users_accounts
-      JOIN delete_requests ON delete_requests.user_id=users_accounts.user_id`
+      `SELECT accounts.account_id, accounts.username
+      FROM accounts
+      JOIN delete_requests ON delete_requests.user_id=accounts.account_id`
     );
 
     if (deleteRequestsFound.rowCount != 0) {
@@ -706,8 +671,8 @@ const getAllDeleteRequests = async (req, res) => {
 };
 
 module.exports = {
+  login,
   createUser,
-  loginUser,
   createDetailsUser,
   getDetailsUser,
   updateDetailsUser,
@@ -721,7 +686,6 @@ module.exports = {
   getAllUsersDetails,
   getAllUsersAllSavedListings,
   createAdmin,
-  loginAdmin,
   getAllDeleteRequests,
   deleteUserAccountByAdmin,
 };
