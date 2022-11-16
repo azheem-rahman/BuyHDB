@@ -1,16 +1,10 @@
 import React from "react";
-import CreateAccount from "../components/CreateAccount";
-import CreateAccountSideImage from "../assets/CreateAccountSideImage.jpg";
+import SignUp from "../components/SignUp";
 
 const PageCreateAccount = () => {
   return (
-    <div className="row">
-      <div className="col-sm">
-        <img src={CreateAccountSideImage} alt="" style={{ width: "50vw" }} />
-      </div>
-      <div className="col-sm">
-        <CreateAccount />
-      </div>
+    <div>
+      <SignUp />
     </div>
   );
 };
