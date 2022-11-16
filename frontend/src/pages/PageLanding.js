@@ -1,11 +1,11 @@
 import React from "react";
-import Login from "../components/Login";
+import SignInSide from "../components/SignInSide";
 
 const PageLanding = () => {
   return (
-    <div className="landing-page-background">
-      <Login />
-    </div>
+    <>
+      <SignInSide />;
+    </>
   );
 };
 

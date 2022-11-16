@@ -11,7 +11,7 @@ import PageResults from "./pages/PageResults";
 import PageLanding from "./pages/PageLanding";
 import PageCreateAccount from "./pages/PageCreateAccount";
 import PageUserSavedListings from "./pages/PageUserSavedListings";
-import TestLogin from "./components/TestLogin";
+import TestLogin from "./components/SignInSide";
 import PageAdminHome from "./pages/PageAdminHome";
 
 import PageAdminUserAccountsOverview from "./pages/PageAdminUserAccountsOverview";
@@ -63,14 +63,25 @@ function App() {
     >
       <div className="container-fluid gx-0">
         <Routes>
-          {/* Routes for User Accounts */}
+          {/* shared routes both admin and users */}
           <Route
             exact
             path="/"
             element={
-              <Navigate replace to={userLoggedIn ? "/homepage" : "/login"} />
+              <Navigate
+                replace
+                to={
+                  userLoggedIn
+                    ? currentAccountType === "admin"
+                      ? "/admin-homepage"
+                      : "/homepage"
+                    : "/login"
+                }
+              />
             }
           />
+
+          {/* Routes for User Accounts */}
           <Route path="/login" element={<PageLanding />} />
           <Route path="/create-account" element={<PageCreateAccount />} />
           <Route path="/homepage" element={<PageHome />} />
