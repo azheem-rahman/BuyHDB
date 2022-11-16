@@ -118,10 +118,7 @@ const SignInSide = () => {
               alignItems: "center",
             }}
           >
-            <img
-              src={BuyHDBLogo2}
-              style={{ height: 40, width: 210, marginBottom: 10 }}
-            />
+            <img src={BuyHDBLogo2} style={{ height: 100 }} />
             {/* <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
               <LockOutlinedIcon />
             </Avatar> */}
