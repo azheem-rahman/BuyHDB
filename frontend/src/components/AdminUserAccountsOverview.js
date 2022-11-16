@@ -1,22 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import AdminNavBar from "../components/AdminNavBar";
 
 import { DataGrid } from "@mui/x-data-grid";
 
 import { Button } from "react-bootstrap";
+import AdminEditUserAccountModal from "./AdminEditUserAccountModal";
 
 const AdminUserAccountsOverview = () => {
   // ========================================================================= //
   // =================== USER ACCOUNTS LOGIN DETAILS PORTION ================= //
   // ========================================================================= //
   const [userAccountsLoginDetails, setUserAccountsLoginDetails] = useState([]);
-  const [deleteUserAccountsSelection, setDeleteUserAccountsSelection] =
-    useState([]);
+  const [userAccountsSelection, setUserAccountsSelection] = useState([]);
+
+  const [editUserAccountModalOpen, setEditUserAccountModalOpen] =
+    useState(false);
+  const newUsernameRef = useRef();
+  const newPasswordRef = useRef();
 
   const columnsUserAccountLoginDetails = [
-    { field: "user_id", headerName: "Account ID" },
-    { field: "username", headerName: "Username" },
+    { field: "user_id", headerName: "Account ID", width: 100 },
+    { field: "username", headerName: "Username", width: 200 },
     { field: "password", headerName: "Password", flex: 1 },
   ];
 
@@ -45,13 +50,13 @@ const AdminUserAccountsOverview = () => {
     }
   };
 
-  // to track and setDeleteUserAccountsSelection to rows selected by Admin
-  const onRowsSelectionHandleDeleteUserAccounts = (rowIDs) => {
+  // to track and setUserAccountsSelection to rows selected by Admin
+  const onRowsSelectionHandleUserAccounts = (rowIDs) => {
     const selectedRowData = rowIDs.map((rowID) =>
       userAccountsLoginDetails.find((row) => row.user_id === rowID)
     );
     console.log(selectedRowData);
-    setDeleteUserAccountsSelection(selectedRowData);
+    setUserAccountsSelection(selectedRowData);
   };
 
   // to delete user accounts (in backend) selected by Admin
@@ -75,15 +80,15 @@ const AdminUserAccountsOverview = () => {
         console.log(response);
       };
 
-      deleteUserAccountsSelection.map((userAccount) => {
+      userAccountsSelection.map((userAccount) => {
         return deleteOneUserAccountToBackend(url, userAccount);
       });
 
-      // update frontend deleteUserAccountsSelections so that datagrid is updated
+      // update frontend userAccountsSelections so that datagrid is updated
       setUserAccountsLoginDetails(
         userAccountsLoginDetails.filter(
           (row) =>
-            deleteUserAccountsSelection.filter(
+            userAccountsSelection.filter(
               (selectedRow) => selectedRow.user_id === row.user_id
             ).length < 1
         )
@@ -93,14 +98,56 @@ const AdminUserAccountsOverview = () => {
     }
   };
 
-  // to getUserAccountsLoginDetails
-  // to getUserPersonalDetails
-  // from backend at mount and unmount
-  useEffect(() => {
-    getUserAccountsLoginDetails();
-    getUserPersonalDetails();
-    getAllUsersAllSavedListings();
-  }, []);
+  // to edit user account username and password selected by Admin
+  // Admin selects user account row > modal pops up with user_id populated > Admin fills in form with new username and new password
+  const handleEditUserAccountClick = () => {
+    // setEditUserAccountModalOpen to true so that modal pops up
+    if (userAccountsSelection.length !== 0) {
+      setEditUserAccountModalOpen(true);
+    }
+  };
+
+  const handleEditUserAccountModalSubmit = () => {
+    // setEditUserAccountModalOpen to false so that modal closes
+    setEditUserAccountModalOpen(false);
+
+    // update backend the changes to user account
+    editUserAccountSelectedToBackend();
+  };
+
+  const handleEditUserAccountModalCancel = () => {
+    // setEditUserAccountModalOpen to false so that modal closes
+    setEditUserAccountModalOpen(false);
+  };
+
+  // to edit user account username and password (in backend) selected by Admin
+  const editUserAccountSelectedToBackend = async () => {
+    try {
+      const url = "http://127.0.0.1:5001/admin-update-user-account";
+
+      const body = {
+        user_id: userAccountsSelection[0].user_id,
+        newUsername: newUsernameRef.current.value,
+        newPassword: newPasswordRef.current.value,
+      };
+
+      const res = await fetch(url, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      const response = await res.json();
+      console.log(response);
+
+      // clear UserAccountsLoginDetails() to clear Datagrid table
+      // refetch updated backend data and populate UserAccountLoginDetails() with updated data
+      setUserAccountsLoginDetails([]);
+      getUserAccountsLoginDetails();
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
 
   // ========================================================================= //
   // ================== USER ACCOUNTS PERSONAL DETAILS PORTION =============== //
@@ -253,9 +300,31 @@ const AdminUserAccountsOverview = () => {
     }
   };
 
+  // to getUserAccountsLoginDetails
+  // to getUserPersonalDetails
+  // to getAllUsersAllSavedListings
+  // from backend at mount and unmount
+  useEffect(() => {
+    getUserAccountsLoginDetails();
+    getUserPersonalDetails();
+    getAllUsersAllSavedListings();
+  }, []);
+
   return (
     <div>
       <AdminNavBar />
+
+      {/* modal for admin to edit user accounts */}
+      {editUserAccountModalOpen && (
+        <AdminEditUserAccountModal
+          title="Edit User Account"
+          userID={userAccountsSelection[0].user_id}
+          submitClicked={handleEditUserAccountModalSubmit}
+          cancel={handleEditUserAccountModalCancel}
+          newUsernameRef={newUsernameRef}
+          newPasswordRef={newPasswordRef}
+        />
+      )}
 
       <div className="container centered">
         <h2>Admin User Accounts Overview</h2>
@@ -275,7 +344,7 @@ const AdminUserAccountsOverview = () => {
             autoPageSize={true}
             checkboxSelection={true}
             onSelectionModelChange={(rowIDs) =>
-              onRowsSelectionHandleDeleteUserAccounts(rowIDs)
+              onRowsSelectionHandleUserAccounts(rowIDs)
             }
           />
         </div>
@@ -289,6 +358,9 @@ const AdminUserAccountsOverview = () => {
               Delete User Accounts
             </Button>
             <div className="col"></div>
+            <Button variant="dark" onClick={handleEditUserAccountClick}>
+              Edit User Accounts
+            </Button>
           </div>
         </div>
         <br />

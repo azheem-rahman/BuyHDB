@@ -21,7 +21,7 @@ const Login = () => {
   };
 
   const passLoginDetailsToBackend = async () => {
-    const url = "http://127.0.0.1:5001/user-login";
+    const url = "http://127.0.0.1:5001/login";
     const body = {
       username: inputUsernameRef.current.value,
       password: inputPasswordRef.current.value,
@@ -42,6 +42,16 @@ const Login = () => {
       if (response.status === "ok") {
         setSuccessfulLogin(true);
         someCtx.setCurrentUsername(inputUsernameRef.current.value);
+
+        // if account is Admin
+        if (response.accountType === "user") {
+          someCtx.setCurrentAccountType("user");
+        }
+
+        // if account is User
+        if (response.accountType === "admin") {
+          someCtx.setCurrentAccountType("admin");
+        }
       }
       // unsuccessful login
       else {
@@ -127,7 +137,12 @@ const Login = () => {
           </div>
         </div>
       </div>
-      {successfulLogin && <Navigate to="/homepage" />}
+      {successfulLogin && someCtx.currentAccountType === "user" && (
+        <Navigate to="/homepage" />
+      )}
+      {successfulLogin && someCtx.currentAccountType === "admin" && (
+        <Navigate to="/admin-homepage" />
+      )}
     </div>
   );
 };

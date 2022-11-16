@@ -38,6 +38,8 @@ function App() {
   const [currentUsername, setCurrentUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  const [currentAccountType, setCurrentAccountType] = useState("");
+
   return (
     <SomeContext.Provider
       value={{
@@ -55,6 +57,8 @@ function App() {
         setCurrentUsername,
         password,
         setPassword,
+        currentAccountType,
+        setCurrentAccountType,
       }}
     >
       <div className="container-fluid gx-0">
