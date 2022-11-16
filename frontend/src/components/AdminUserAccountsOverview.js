@@ -20,7 +20,7 @@ const AdminUserAccountsOverview = () => {
   const newPasswordRef = useRef();
 
   const columnsUserAccountLoginDetails = [
-    { field: "user_id", headerName: "Account ID", width: 100 },
+    { field: "account_id", headerName: "Account ID", width: 100 },
     { field: "username", headerName: "Username", width: 200 },
     { field: "password", headerName: "Password", flex: 1 },
   ];
@@ -53,7 +53,7 @@ const AdminUserAccountsOverview = () => {
   // to track and setUserAccountsSelection to rows selected by Admin
   const onRowsSelectionHandleUserAccounts = (rowIDs) => {
     const selectedRowData = rowIDs.map((rowID) =>
-      userAccountsLoginDetails.find((row) => row.user_id === rowID)
+      userAccountsLoginDetails.find((row) => row.account_id === rowID)
     );
     console.log(selectedRowData);
     setUserAccountsSelection(selectedRowData);
@@ -89,7 +89,7 @@ const AdminUserAccountsOverview = () => {
         userAccountsLoginDetails.filter(
           (row) =>
             userAccountsSelection.filter(
-              (selectedRow) => selectedRow.user_id === row.user_id
+              (selectedRow) => selectedRow.account_id === row.account_id
             ).length < 1
         )
       );
@@ -126,7 +126,7 @@ const AdminUserAccountsOverview = () => {
       const url = "http://127.0.0.1:5001/admin-update-user-account";
 
       const body = {
-        user_id: userAccountsSelection[0].user_id,
+        account_id: userAccountsSelection[0].account_id,
         newUsername: newUsernameRef.current.value,
         newPassword: newPasswordRef.current.value,
       };
@@ -318,7 +318,7 @@ const AdminUserAccountsOverview = () => {
       {editUserAccountModalOpen && (
         <AdminEditUserAccountModal
           title="Edit User Account"
-          userID={userAccountsSelection[0].user_id}
+          userID={userAccountsSelection[0].account_id}
           submitClicked={handleEditUserAccountModalSubmit}
           cancel={handleEditUserAccountModalCancel}
           newUsernameRef={newUsernameRef}
@@ -327,7 +327,7 @@ const AdminUserAccountsOverview = () => {
       )}
 
       <div className="container centered">
-        <h2>Admin User Accounts Overview</h2>
+        <h2>User Accounts Overview</h2>
       </div>
 
       {/* See all user accounts (username and password) */}
@@ -336,9 +336,9 @@ const AdminUserAccountsOverview = () => {
         <h4>All User Accounts Login Details</h4>
         <hr />
 
-        <div style={{ height: "101vh" }}>
+        <div style={{ height: "100vh" }}>
           <DataGrid
-            getRowId={(row) => row.user_id}
+            getRowId={(row) => row.account_id}
             rows={userAccountsLoginDetails}
             columns={columnsUserAccountLoginDetails}
             autoPageSize={true}
@@ -372,7 +372,7 @@ const AdminUserAccountsOverview = () => {
         <h4>All User Accounts Personal Details</h4>
         <hr />
 
-        <div style={{ height: "101vh" }}>
+        <div style={{ height: "100vh" }}>
           <DataGrid
             getRowId={(row) => row.detail_id}
             rows={userPersonalDetails}
@@ -385,10 +385,10 @@ const AdminUserAccountsOverview = () => {
       {/* See all user accounts saved listings */}
       <div className="container">
         <hr />
-        <h4>All Saved Listings</h4>
+        <h4>All User Accounts Saved Listings</h4>
         <hr />
 
-        <div style={{ height: "101vh" }}>
+        <div style={{ height: "100vh" }}>
           <DataGrid
             getRowId={(row) => row.saved_listing_id}
             rows={userSavedListings}
