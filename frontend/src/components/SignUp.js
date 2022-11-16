@@ -34,6 +34,8 @@ const SignUp = () => {
   const inputUsernameRef = useRef();
   const inputPasswordRef = useRef();
 
+  const [showPassword, setShowPassword] = useState();
+
   const inputNameRef = useRef();
   const inputCurrentResidentialTownRef = useRef();
   const inputCurrentResidentialFlatTypeRef = useRef();
@@ -148,6 +150,18 @@ const SignUp = () => {
   ];
 
   const flatModelOptionsMultiGeneration = ["Multi Generation"];
+
+  const handleClickShowPassword = () => {
+    if (showPassword) {
+      setShowPassword(false);
+    } else {
+      setShowPassword(true);
+    }
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
 
   const handleTownSelect = (event) => {
     event.preventDefault();
@@ -348,7 +362,7 @@ const SignUp = () => {
               </Grid>
 
               <Grid item xs={12}>
-                <TextField
+                {/* <TextField
                   required
                   fullWidth
                   id="password"
@@ -356,6 +370,30 @@ const SignUp = () => {
                   name="password"
                   type="password"
                   inputRef={inputPasswordRef}
+                /> */}
+                <TextField
+                  required
+                  fullWidth
+                  id="password"
+                  label="Password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  inputRef={inputPasswordRef}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword && <Visibility />}
+                          {!showPassword && <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Grid>
 
@@ -489,7 +527,7 @@ const SignUp = () => {
         </Box>
       </Container>
 
-      {successfulCreateAccount && <Navigate to="/Homepage" />}
+      {successfulCreateAccount && <Navigate to="/homepage" />}
     </ThemeProvider>
   );
 };
