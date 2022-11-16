@@ -29,6 +29,8 @@ const SignInSide = () => {
   const inputUsernameRef = useRef();
   const inputPasswordRef = useRef();
 
+  const [incorrectCredentials, setIncorrectCredentials] = useState(false);
+
   const [successfulLogin, setSuccessfulLogin] = useState(null);
 
   const passLoginDetailsToBackend = async () => {
@@ -66,6 +68,7 @@ const SignInSide = () => {
       }
       // unsuccessful login
       else {
+        setIncorrectCredentials(true);
         setSuccessfulLogin(false);
       }
     } catch (err) {
@@ -131,28 +134,60 @@ const SignInSide = () => {
               onSubmit={handleSubmit}
               sx={{ mt: 1 }}
             >
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="username"
-                label="Username"
-                id="username"
-                autoComplete="username"
-                autoFocus
-                inputRef={inputUsernameRef}
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                inputRef={inputPasswordRef}
-              />
+              {incorrectCredentials ? (
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  error
+                  name="username"
+                  id="username"
+                  label="Username"
+                  autoFocus
+                  inputRef={inputUsernameRef}
+                  helperText="Incorrect username"
+                />
+              ) : (
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="username"
+                  label="Username"
+                  id="username"
+                  autoFocus
+                  inputRef={inputUsernameRef}
+                />
+              )}
+
+              {incorrectCredentials ? (
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  error
+                  name="password"
+                  id="password"
+                  label="Password"
+                  type="password"
+                  autoFocus
+                  inputRef={inputPasswordRef}
+                  helperText="Incorrect password"
+                />
+              ) : (
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                  inputRef={inputPasswordRef}
+                />
+              )}
+
               <Button
                 type="submit"
                 fullWidth
