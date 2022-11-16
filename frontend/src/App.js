@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import SomeContext from "./context/some-context";
 
-import NavBar from "./components/NavBar";
 import PageHome from "./pages/PageHome";
 import PageSearch from "./pages/PageSearch";
 import PageCompare from "./pages/PageCompare";
@@ -11,12 +10,12 @@ import PageResults from "./pages/PageResults";
 import PageLanding from "./pages/PageLanding";
 import PageCreateAccount from "./pages/PageCreateAccount";
 import PageUserSavedListings from "./pages/PageUserSavedListings";
-import TestLogin from "./components/SignInSide";
 import PageAdminHome from "./pages/PageAdminHome";
 
 import PageAdminUserAccountsOverview from "./pages/PageAdminUserAccountsOverview";
 import PageAdminUserAccountsRequests from "./pages/PageAdminUserAccountsRequests";
 import PageAdminAccountsOverview from "./pages/PageAdminAccountsOverview";
+import SignUp from "./components/SignUp";
 
 function App() {
   const [town, setTown] = useState("");
@@ -110,7 +109,7 @@ function App() {
           />
 
           {/* Test Route */}
-          <Route path="/test" element={<TestLogin />} />
+          <Route path="/test" element={<SignUp />} />
         </Routes>
       </div>
     </SomeContext.Provider>
