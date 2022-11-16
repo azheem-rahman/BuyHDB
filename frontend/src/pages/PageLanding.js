@@ -4,7 +4,7 @@ import SignInSide from "../components/SignInSide";
 const PageLanding = () => {
   return (
     <>
-      <SignInSide />;
+      <SignInSide />
     </>
   );
 };
