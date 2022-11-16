@@ -16,26 +16,10 @@ const Homepage = () => {
     <div>
       <NavBar />
       <div>
-        <div className="homepage-header" style={{ margin: 0, padding: 0 }}>
-          <div className="container">
-            <div className="row centered">
-              <h3>Welcome back, {someCtx.currentUsername}!</h3>
-            </div>
-            <div className="row centered">
-              <h4>Your one stop website for all things HDB</h4>
-            </div>
-            <div className="row">
-              <div className="col centered">
-                <NavLink className="btn btn-light" to="/search">
-                  Start Search
-                </NavLink>
-              </div>
-            </div>
-            <div className="row centered">
-              <h6>See Recent HDB Resale Transaction Records</h6>
-            </div>
-          </div>
-        </div>
+        <div
+          className="homepage-header"
+          style={{ margin: 0, padding: 0 }}
+        ></div>
 
         <div className="container">
           <br />

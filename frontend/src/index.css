@@ -32,9 +32,9 @@ body {
   align-items: center;
 }
 
-.container {
+/* .container {
   border: 1px solid black;
-}
+} */
 
 .header-test {
   border: 1px solid red;
