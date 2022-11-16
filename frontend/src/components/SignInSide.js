@@ -21,6 +21,11 @@ import { Navigate, NavLink } from "react-router-dom";
 
 import SomeContext from "../context/some-context";
 
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+
 const theme = createTheme();
 
 const SignInSide = () => {
@@ -29,9 +34,23 @@ const SignInSide = () => {
   const inputUsernameRef = useRef();
   const inputPasswordRef = useRef();
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const [incorrectCredentials, setIncorrectCredentials] = useState(false);
 
   const [successfulLogin, setSuccessfulLogin] = useState(null);
+
+  const handleClickShowPassword = () => {
+    if (showPassword) {
+      setShowPassword(false);
+    } else {
+      setShowPassword(true);
+    }
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
 
   const passLoginDetailsToBackend = async () => {
     const url = "http://127.0.0.1:5001/login";
@@ -169,9 +188,23 @@ const SignInSide = () => {
                   name="password"
                   id="password"
                   label="Password"
-                  type="password"
-                  autoFocus
+                  type={showPassword ? "text" : "password"}
                   inputRef={inputPasswordRef}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword && <Visibility />}
+                          {!showPassword && <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                   helperText="Incorrect password"
                 />
               ) : (
@@ -181,10 +214,24 @@ const SignInSide = () => {
                   fullWidth
                   name="password"
                   label="Password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   id="password"
-                  autoComplete="current-password"
                   inputRef={inputPasswordRef}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword && <Visibility />}
+                          {!showPassword && <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               )}
 
