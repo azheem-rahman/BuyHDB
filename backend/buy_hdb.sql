@@ -5,6 +5,7 @@ CREATE TABLE accounts (
     uuid uuid DEFAULT uuid_generate_v4() NOT NULL,
     username varchar(20) NOT NULL,
     password text NOT NULL,
+    account_type varchar(5) NOT NULL,
     PRIMARY KEY ("account_id"),
 );
 
@@ -20,7 +21,7 @@ CREATE TABLE users_details (
     PRIMARY KEY(detail_id),
     CONSTRAINT fk_user
         FOREIGN KEY(user_id)
-            REFERENCES users_accounts(user_id)
+            REFERENCES accounts(account_id)
             ON DELETE CASCADE
 );
 
@@ -40,7 +41,7 @@ CREATE TABLE saved_listings (
     PRIMARY KEY(saved_listing_id),
     CONSTRAINT fk_user 
         FOREIGN KEY(user_id)
-            REFERENCES users_accounts(user_id)
+            REFERENCES accounts(account_id)
             ON DELETE CASCADE
 );
 
@@ -50,6 +51,6 @@ CREATE TABLE delete_requests (
     PRIMARY KEY(delete_request_id),
     CONSTRAINT fk_user
         FOREIGN KEY(user_id)
-            REFERENCES users_accounts(user_id)
+            REFERENCES accounts(account_id)
             ON DELETE CASCADE
 );
