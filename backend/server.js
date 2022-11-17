@@ -21,6 +21,7 @@ app.put("/user-create-listing", db.createListingUser);
 app.post("/user-get-all-saved-listings", db.getAllSavedListings);
 app.delete("/user-delete-one-saved-listing", db.deleteOneSavedListing);
 app.delete("/user-delete-all-saved-listings", db.deleteAllSavedListings);
+app.put("/user-create-delete-request", db.createDeleteAccountRequest);
 
 app.get("/admin-get-all-user-accounts", db.getAllUsersAccounts);
 app.get("/admin-get-all-user-details", db.getAllUsersDetails);
@@ -28,11 +29,12 @@ app.get("/admin-get-all-users-saved-listings", db.getAllUsersAllSavedListings);
 app.delete("/admin-delete-user-saved-listing", db.deleteOneSavedListing);
 app.patch("/admin-update-user-account", db.updateUserAccount);
 app.delete("/admin-delete-user-account", db.deleteUserAccountByAdmin);
+app.get("/admin-get-delete-requests", db.getAllDeleteRequests);
+app.get("/admin-get-all-admin-accounts", db.getAllAdminAccounts);
+app.delete("/admin-delete-user-saved-listing", db.deleteOneSavedListing);
 
 // not used yet
 app.put("/admin-create-account", db.createAdmin);
-app.put("/user-create-delete-request", db.createDeleteAccountRequest);
-app.get("/admin-get-delete-requests", db.getAllDeleteRequests);
 
 const PORT = process.env.PORT || 5001;
 

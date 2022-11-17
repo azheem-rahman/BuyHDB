@@ -466,6 +466,24 @@ const getAllUsersAccounts = async (req, res) => {
   }
 };
 
+// ========================== Get All Admin Accounts ========================= //
+const getAllAdminAccounts = async (req, res) => {
+  try {
+    const data = await pool.query(
+      `SELECT * FROM accounts 
+      WHERE account_type = 'admin';`
+    );
+
+    res.json(data.rows);
+    console.log(data.rows); // to access only the table data from response
+  } catch (err) {
+    console.error(err.message);
+    res
+      .status(400)
+      .json({ status: "error", message: "failed to GET all users accounts" });
+  }
+};
+
 // ============ Edit User Account Login Details by Admin ==================== //
 const updateUserAccount = async (req, res) => {
   try {
@@ -682,6 +700,7 @@ module.exports = {
   deleteAllSavedListings,
   createDeleteAccountRequest,
   getAllUsersAccounts,
+  getAllAdminAccounts,
   updateUserAccount,
   getAllUsersDetails,
   getAllUsersAllSavedListings,
