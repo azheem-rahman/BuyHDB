@@ -10,7 +10,7 @@ const AdminDeleteUserAccountRequests = () => {
 
   const columnsDeleteUserAccountRequests = [
     { field: "account_id", headerName: "Account ID" },
-    { field: "username", headerName: "Username" },
+    { field: "username", headerName: "Username", flex: 1 },
   ];
 
   // GET all user accounts delete requests
