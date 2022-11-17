@@ -1,3 +1,5 @@
+CREATE DATABASE buy_hdb
+
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE accounts (
