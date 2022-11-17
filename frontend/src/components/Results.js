@@ -31,7 +31,14 @@ const Results = () => {
     { field: "block", headerName: "Block" },
     { field: "storey_range", headerName: "Storey Range", flex: 1 },
     { field: "floor_area_sqm", headerName: "Floor Area" },
-    { field: "resale_price", headerName: "Resale Price" },
+    {
+      field: "resale_price",
+      headerName: "Resale Price",
+      valueFormatter: (resalePrice) => {
+        const resalePriceFormatted = Number(resalePrice.value).toLocaleString();
+        return resalePriceFormatted;
+      },
+    },
     { field: "remaining_lease", headerName: "Remaining Lease", flex: 1 },
   ];
 
