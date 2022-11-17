@@ -23,7 +23,7 @@ const Overlay = (props) => {
               <Form.Label>Enter New Username</Form.Label>
               <Form.Control
                 ref={props.newUsernameRef}
-                type="email"
+                type="text"
                 placeholder="Username"
               />
             </Form.Group>
