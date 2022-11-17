@@ -615,9 +615,21 @@ const createAdmin = async (req, res) => {
         VALUES ('${req.body.username}', '${password}', 'admin')`
       );
 
+      const getNewAdminAccountID = await pool.query(
+        `SELECT account_id FROM accounts
+        WHERE username = '${req.body.username}' AND account_type = 'admin';`
+      );
+
+      // console.log(getNewAdminAccountID.rows[0].account_id);
+
       res.json({
         status: "ok",
-        message: `admin ${req.body.username} created successfully`,
+        message: `admin account ${req.body.username} created successfully`,
+        newAdminAccountCreated: {
+          account_id: getNewAdminAccountID.rows[0].account_id,
+          username: req.body.username,
+          password: password,
+        },
       });
     }
   } catch (err) {
