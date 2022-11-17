@@ -31,7 +31,7 @@ app.patch("/admin-update-user-account", db.updateUserAccount);
 app.delete("/admin-delete-user-account", db.deleteUserAccountByAdmin);
 app.get("/admin-get-delete-requests", db.getAllDeleteRequests);
 app.get("/admin-get-all-admin-accounts", db.getAllAdminAccounts);
-app.delete("/admin-delete-user-saved-listing", db.deleteOneSavedListing);
+app.delete("/admin-delete-admin-account", db.deleteAdminAccount);
 
 // not used yet
 app.put("/admin-create-account", db.createAdmin);

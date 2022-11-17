@@ -629,6 +629,36 @@ const createAdmin = async (req, res) => {
   }
 };
 
+// ============================== Delete Admin Account ============================= //
+const deleteAdminAccount = async (req, res) => {
+  try {
+    // find the user_id based on username
+    const getUserID = await pool.query(
+      `SELECT account_id FROM accounts
+      WHERE username = '${req.body.username}' AND account_type = 'admin';`
+    );
+    // console.log(userID.rows[0].user_id);
+    const userID = getUserID.rows[0].account_id;
+
+    // delete user account from users_accounts table
+    await pool.query(
+      `DELETE FROM accounts
+      WHERE account_id = '${userID}'`
+    );
+
+    res.json({
+      status: "ok",
+      message: `${req.body.username} user account deleted successfully`,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(400).json({
+      status: "error",
+      message: `failed to delete ${req.body.username} user account`,
+    });
+  }
+};
+
 // =============== Using Admin Account to delete User Account ============= //
 const deleteUserAccountByAdmin = async (req, res) => {
   try {
@@ -705,6 +735,7 @@ module.exports = {
   getAllUsersDetails,
   getAllUsersAllSavedListings,
   createAdmin,
+  deleteAdminAccount,
   getAllDeleteRequests,
   deleteUserAccountByAdmin,
 };
