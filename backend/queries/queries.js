@@ -1,5 +1,6 @@
 const Pool = require("pg").Pool;
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid");
 
 const pool = new Pool({
@@ -49,11 +50,32 @@ const login = async (req, res) => {
 
       // check if password match
       if (passwordMatch) {
+        // create payload to tag access and refresh token
+        const payload = {
+          username: req.body.username,
+          accountType: accountType,
+        };
+
+        // create access token
+        const accessToken = jwt.sign(payload, process.env.ACCESS_SECRET, {
+          expiresIn: "20m",
+          jwtid: uuidv4(),
+        });
+
+        // create refresh token
+        const refreshToken = jwt.sign(payload, process.env.REFRESH_SECRET, {
+          expiresIn: "30d",
+          jwtid: uuidv4(),
+        });
+
         // proceed to login
         res.json({
           status: "ok",
           message: `${req.body.username} account login successful`,
+          username: req.body.username,
           accountType: accountType,
+          accessToken: accessToken,
+          refreshToken: refreshToken,
         });
       } else {
         // respond error unable to login because password does not match
@@ -102,9 +124,30 @@ const createUser = async (req, res) => {
         VALUES ('${req.body.username}', '${password}', 'user');`
       );
 
+      // create payload to tag access and refresh token
+      const payload = {
+        username: req.body.username,
+        accountType: "user",
+      };
+
+      // create access token
+      const accessToken = jwt.sign(payload, process.env.ACCESS_SECRET, {
+        expiresIn: "20m",
+        jwtid: uuidv4(),
+      });
+
+      // create refresh token
+      const refreshToken = jwt.sign(payload, process.env.REFRESH_SECRET, {
+        expiresIn: "30d",
+        jwtid: uuidv4(),
+      });
+
       res.json({
         status: "ok",
         message: `user ${req.body.username} created successfully`,
+        username: req.body.username,
+        accessToken: accessToken,
+        refreshToken: refreshToken,
       });
     }
   } catch (err) {
