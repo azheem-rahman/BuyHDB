@@ -38,8 +38,6 @@ const SignInSide = () => {
 
   const [incorrectCredentials, setIncorrectCredentials] = useState(false);
 
-  const [successfulLogin, setSuccessfulLogin] = useState(null);
-
   const handleClickShowPassword = () => {
     if (showPassword) {
       setShowPassword(false);
@@ -72,23 +70,34 @@ const SignInSide = () => {
 
       // successful login
       if (response.status === "ok") {
-        setSuccessfulLogin(true);
-        someCtx.setCurrentUsername(inputUsernameRef.current.value);
+        someCtx.setUserLoggedIn(true);
+
+        localStorage.setItem("currentUsername", response.username);
+        someCtx.setCurrentUsername(response.username);
+
+        // to store access token from login response to localstorage
+        localStorage.setItem("accessToken", response.accessToken);
+        someCtx.setAccessToken(response.accessToken);
+
+        // to store refresh token from login response to localstorage
+        localStorage.setItem("refreshToken", response.refreshToken);
+        someCtx.setRefreshToken(response.refreshToken);
 
         // if account is Admin
         if (response.accountType === "user") {
+          localStorage.setItem("accountType", response.accountType);
           someCtx.setCurrentAccountType("user");
         }
 
         // if account is User
         if (response.accountType === "admin") {
+          localStorage.setItem("accountType", response.accountType);
           someCtx.setCurrentAccountType("admin");
         }
       }
       // unsuccessful login
       else {
         setIncorrectCredentials(true);
-        setSuccessfulLogin(false);
       }
     } catch (err) {
       console.log(err.message);
@@ -98,14 +107,14 @@ const SignInSide = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const data = new FormData(event.currentTarget);
-    console.log({
-      username: data.get("username"),
-      password: data.get("password"),
-    });
+    // const data = new FormData(event.currentTarget);
+    // console.log({
+    //   username: data.get("username"),
+    //   password: data.get("password"),
+    // });
 
-    console.log(inputUsernameRef.current.value);
-    console.log(inputPasswordRef.current.value);
+    // console.log(inputUsernameRef.current.value);
+    // console.log(inputPasswordRef.current.value);
 
     passLoginDetailsToBackend();
   };
@@ -256,12 +265,12 @@ const SignInSide = () => {
       </Grid>
 
       {/* to redirect to user homepage if user account */}
-      {successfulLogin && someCtx.currentAccountType === "user" && (
+      {someCtx.userLoggedIn && someCtx.currentAccountType === "user" && (
         <Navigate to="/homepage" />
       )}
 
       {/* to redirect to admin homepage if admin account */}
-      {successfulLogin && someCtx.currentAccountType === "admin" && (
+      {someCtx.userLoggedIn && someCtx.currentAccountType === "admin" && (
         <Navigate to="/admin-homepage" />
       )}
     </ThemeProvider>

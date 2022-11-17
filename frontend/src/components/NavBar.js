@@ -14,6 +14,7 @@ import RequestDeleteAccountModal from "./RequestDeleteAccountModal";
 
 const NavBar = () => {
   const someCtx = useContext(SomeContext);
+
   const [requestDeleteAccountModalOpen, setRequestDeleteAccountModalOpen] =
     useState(false);
 
@@ -62,6 +63,18 @@ const NavBar = () => {
     }
   };
 
+  const handleLogOut = () => {
+    // clear local storage
+    localStorage.clear();
+
+    // clear data in context store
+    someCtx.setUserLoggedIn(false);
+    someCtx.setCurrentUsername("");
+    someCtx.setAccessToken("");
+    someCtx.setRefreshToken("");
+    someCtx.setCurrentAccountType("");
+  };
+
   return (
     <Navbar className="navbar-static-top" expand="sm" variant="light">
       <Container>
@@ -105,7 +118,7 @@ const NavBar = () => {
 
               <NavDropdown.Divider />
 
-              <NavDropdown.Item as={Link} to="/">
+              <NavDropdown.Item as={Link} to="/" onClick={handleLogOut}>
                 Logout
               </NavDropdown.Item>
             </NavDropdown>

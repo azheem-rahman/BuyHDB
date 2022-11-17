@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import SomeContext from "./context/some-context";
 
@@ -33,11 +33,24 @@ function App() {
   //   const [compareSecond, setCompareSecond] = useState("");
 
   const [userLoggedIn, setUserLoggedIn] = useState(false);
+  const [accessToken, setAccessToken] = useState("");
+  const [refreshToken, setRefreshToken] = useState("");
 
   const [currentUsername, setCurrentUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const [currentAccountType, setCurrentAccountType] = useState("");
+
+  // if local storage has token, setState in context store
+  useEffect(() => {
+    if (localStorage.refreshToken) {
+      setUserLoggedIn(true);
+      setAccessToken(localStorage.accessToken);
+      setRefreshToken(localStorage.refreshToken);
+      setCurrentUsername(localStorage.currentUsername);
+      setCurrentAccountType(localStorage.accountType);
+    }
+  }, []);
 
   return (
     <SomeContext.Provider
@@ -52,6 +65,12 @@ function App() {
         setSearchCriteria,
         post,
         setPost,
+        userLoggedIn,
+        setUserLoggedIn,
+        accessToken,
+        setAccessToken,
+        refreshToken,
+        setRefreshToken,
         currentUsername,
         setCurrentUsername,
         password,

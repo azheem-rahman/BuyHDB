@@ -299,6 +299,20 @@ const SignUp = () => {
       if (response.status === "ok") {
         setAccountLoginCreated(true);
         passAccountDetailsToBackend();
+
+        someCtx.setCurrentUsername(response.username);
+        localStorage.setItem("currentUsername", response.username);
+
+        someCtx.setAccessToken(response.accessToken);
+        // to store access token from login response to localstorage
+        localStorage.setItem("accessToken", response.accessToken);
+
+        someCtx.setRefreshToken(response.refreshToken);
+        // to store refresh token from login response to localstorage
+        localStorage.setItem("refreshToken", response.refreshToken);
+
+        someCtx.setCurrentAccountType("user");
+        localStorage.setItem("accountType", "user");
       } else {
         if (response.message === "username taken") {
           setErrorUsernameTaken(true);
@@ -339,7 +353,8 @@ const SignUp = () => {
       // proceed to homepage
       if (response.status === "ok") {
         setSuccessfulCreateAccount(true);
-        someCtx.setCurrentUsername(inputUsernameRef.current.value);
+
+        someCtx.setUserLoggedIn(true);
       } else {
         if (
           response.errorMessage.includes(
