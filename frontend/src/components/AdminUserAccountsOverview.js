@@ -382,6 +382,8 @@ const AdminUserAccountsOverview = () => {
         </div>
       </div>
 
+      <br />
+
       {/* See all user accounts saved listings */}
       <div className="container">
         <hr />
@@ -406,7 +408,6 @@ const AdminUserAccountsOverview = () => {
             <Button variant="warning" onClick={deleteSavedListingToBackend}>
               Delete Saved Listings
             </Button>
-            <div className="col"></div>
           </div>
         </div>
 
