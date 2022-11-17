@@ -31,7 +31,7 @@ const NavBar = () => {
               Requests
             </Nav.Link>
             <Nav.Link as={Link} to="/admin-accounts-overview">
-              Admin
+              Administrator
             </Nav.Link>
 
             <NavDropdown
