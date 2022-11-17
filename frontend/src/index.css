@@ -73,7 +73,8 @@ li {
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
-  height: 35vh;
+  padding: 10px;
+  margin: 10px;
 }
 
 .footer {

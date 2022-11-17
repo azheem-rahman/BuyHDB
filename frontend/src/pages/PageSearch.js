@@ -18,13 +18,15 @@ const PageSearch = () => {
 
       <br />
 
-      <div className="container">
+      <div>
         <ResaleFlatPricesHeader />
       </div>
 
-      <div className="container">
+      <div>
         {someCtx.searchCriteria ? <Navigate to="/results" /> : <Search />}
       </div>
+
+      <br />
 
       <div className="footer d-flex align-items-end">
         <div className="container centered">

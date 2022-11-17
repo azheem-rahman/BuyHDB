@@ -189,12 +189,12 @@ const Search = () => {
   return (
     <div>
       <Form className={styles.searchForm}>
-        <Form.Group className="mb-3" controlId="formSelectTown">
-          <div className="row">
-            <div className="col">
+        <Form.Group controlId="formSelectTown">
+          <div className="row centered">
+            <div className="col-2 d-flex justify-content-end">
               <Form.Label>Select Town</Form.Label>
             </div>
-            <div className="col">
+            <div className="col-4 d-flex justify-content-start">
               <Form.Select size="sm" onChange={handleTownClick}>
                 <option> </option>
                 {townOptions.map((item, index) => {
@@ -209,11 +209,11 @@ const Search = () => {
           </div>
           <br />
 
-          <div className="row">
-            <div className="col">
+          <div className="row centered">
+            <div className="col-2 d-flex justify-content-end">
               <FormLabel>Select Flat Type</FormLabel>
             </div>
-            <div className="col">
+            <div className="col-4 d-flex justify-content-start">
               <Form.Select size="sm" onChange={handleFlatTypeClick}>
                 <option> </option>
                 {flatTypeOptions.map((item, index) => {
@@ -224,11 +224,11 @@ const Search = () => {
           </div>
           <br />
 
-          <div className="row">
-            <div className="col">
+          <div className="row centered">
+            <div className="col-2 d-flex justify-content-end">
               <FormLabel>Select Flat Model</FormLabel>
             </div>
-            <div className="col">
+            <div className="col-4 d-flex justify-content-start">
               <Form.Select size="sm" onChange={handleFlatModelClick}>
                 <option> </option>
                 {someCtx.flatType ? displayFlatModelOptions() : ""}
