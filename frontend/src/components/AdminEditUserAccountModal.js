@@ -26,6 +26,7 @@ const Overlay = (props) => {
                 type="text"
                 placeholder="Username"
               />
+              <Form.Text muted>Max 20 characters</Form.Text>
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -35,6 +36,7 @@ const Overlay = (props) => {
                 type="password"
                 placeholder="Password"
               />
+              <Form.Text muted>Max 20 characters</Form.Text>
             </Form.Group>
 
             <div className="row">
