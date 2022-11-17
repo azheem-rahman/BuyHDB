@@ -145,9 +145,7 @@ const Results = () => {
 
       <Data checkResultFound={checkResultFound()} />
 
-      <br />
-
-      <div style={{ height: "101vh" }}>
+      <div style={{ height: "101vh", margin: 10 }}>
         <DataGrid
           rows={someCtx.post}
           columns={columns}
@@ -158,9 +156,7 @@ const Results = () => {
         />
       </div>
 
-      <br />
-
-      <div className="row">
+      <div className="row" style={{ padding: 10 }}>
         <div className="col d-flex justify-content-center">
           <Button variant="success" onClick={saveUserSelectionsToBackend}>
             Save Selections
