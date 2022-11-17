@@ -32,8 +32,6 @@ app.delete("/admin-delete-user-account", db.deleteUserAccountByAdmin);
 app.get("/admin-get-delete-requests", db.getAllDeleteRequests);
 app.get("/admin-get-all-admin-accounts", db.getAllAdminAccounts);
 app.delete("/admin-delete-admin-account", db.deleteAdminAccount);
-
-// not used yet
 app.put("/admin-create-account", db.createAdmin);
 
 const PORT = process.env.PORT || 5001;
