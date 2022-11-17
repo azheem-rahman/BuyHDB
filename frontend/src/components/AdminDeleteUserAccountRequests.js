@@ -13,7 +13,7 @@ const AdminDeleteUserAccountRequests = () => {
     { field: "username", headerName: "Username" },
   ];
 
-  // GET all user account login details
+  // GET all user accounts delete requests
   const getDeleteUserAccountRequests = async () => {
     const url = "http://127.0.0.1:5001/admin-get-delete-requests";
 
