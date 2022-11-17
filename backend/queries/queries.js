@@ -161,6 +161,7 @@ const createDetailsUser = async (req, res) => {
     res.status(400).json({
       status: "error",
       message: `failed to create new user details for user ${req.body.username}`,
+      errorMessage: err.message,
     });
   }
 };
