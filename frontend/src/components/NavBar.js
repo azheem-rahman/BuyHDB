@@ -68,7 +68,7 @@ const NavBar = () => {
         {requestDeleteAccountModalOpen && (
           <RequestDeleteAccountModal
             title="Delete Account Request"
-            message="You have requested to delete your account with BuyHDB. 
+            message="We're sad to see you go! You have requested to delete your account with BuyHDB. 
             Please click 'Confirm' to proceed."
             confirmClicked={handleRequestDeleteAccountModalConfirm}
             cancel={handleRequestDeleteAccountModalCancel}
