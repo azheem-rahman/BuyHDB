@@ -36,6 +36,9 @@ const SignUp = () => {
 
   const [showPassword, setShowPassword] = useState();
 
+  const [accountLoginCreated, setAccountLoginCreated] = useState(false);
+  const [accountDetailsCreated, setAccountDetailsCreated] = useState(false);
+
   const inputNameRef = useRef();
   const inputCurrentResidentialTownRef = useRef();
   const inputCurrentResidentialFlatTypeRef = useRef();
@@ -48,6 +51,11 @@ const SignUp = () => {
   const [flatModelSelected, setFlatModelSelected] = useState("");
 
   const [submitted, setSubmitted] = useState(false);
+  const [incorrectLoginDetails, setIncorrectLoginDetails] = useState(false);
+  const [errorUsernameTaken, setErrorUsernameTaken] = useState(false);
+  const [incorrectPersonalDetails, setIncorrectPersonalDetails] =
+    useState(false);
+  const [errorNumbersOnly, setErrorNumbersOnly] = useState(false);
   const [successfulCreateAccount, setSuccessfulCreateAccount] = useState(null);
 
   // array of all towns in SG, total 26 towns (tengah excluded)
@@ -242,14 +250,14 @@ const SignUp = () => {
     }
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-  };
+  // const handleSubmit = (event) => {
+  //   event.preventDefault();
+  //   const data = new FormData(event.currentTarget);
+  //   console.log({
+  //     email: data.get("email"),
+  //     password: data.get("password"),
+  //   });
+  // };
 
   const handleCreateAccount = (event) => {
     event.preventDefault();
@@ -258,7 +266,14 @@ const SignUp = () => {
     console.log(inputUsernameRef.current.value);
     console.log(inputPasswordRef.current.value);
 
-    passCreateAccountToBackend();
+    // if account has been created but errors in personal details,
+    // skip creating personal account again to prevent duplicate,
+    // proceed to passing account details to backend
+    if (accountLoginCreated) {
+      passAccountDetailsToBackend();
+    } else {
+      passCreateAccountToBackend();
+    }
   };
 
   const passCreateAccountToBackend = async () => {
@@ -280,8 +295,17 @@ const SignUp = () => {
       console.log(response);
 
       // successful create account to backend, proceed to create account details to backend
+      // unsuccessful create account to backend, highlight error at input box
       if (response.status === "ok") {
+        setAccountLoginCreated(true);
         passAccountDetailsToBackend();
+      } else {
+        if (response.message === "username taken") {
+          setErrorUsernameTaken(true);
+          setIncorrectLoginDetails(true);
+        } else {
+          setIncorrectLoginDetails(true);
+        }
       }
     } catch (err) {
       console.log(err.message);
@@ -316,6 +340,17 @@ const SignUp = () => {
       if (response.status === "ok") {
         setSuccessfulCreateAccount(true);
         someCtx.setCurrentUsername(inputUsernameRef.current.value);
+      } else {
+        if (
+          response.errorMessage.includes(
+            "invalid input syntax for type numeric:"
+          )
+        ) {
+          setErrorNumbersOnly(true);
+          setIncorrectPersonalDetails(true);
+        } else {
+          setIncorrectPersonalDetails(true);
+        }
       }
     } catch (err) {
       console.log(err.message);
@@ -349,52 +384,93 @@ const SignUp = () => {
           >
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <TextField
-                  name="username"
-                  required
-                  fullWidth
-                  id="username"
-                  label="Username"
-                  autoFocus
-                  inputRef={inputUsernameRef}
-                  helperText="Max 20 characters, no spaces"
-                />
+                {incorrectLoginDetails ? (
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    error
+                    name="username"
+                    id="username"
+                    label="Username"
+                    autoFocus
+                    inputRef={inputUsernameRef}
+                    helperText={
+                      errorUsernameTaken
+                        ? "Username not available"
+                        : "Max 20 characters"
+                    }
+                  />
+                ) : (
+                  <TextField
+                    name="username"
+                    required
+                    fullWidth
+                    id="username"
+                    label="Username"
+                    autoFocus
+                    inputRef={inputUsernameRef}
+                    helperText="Max 20 characters"
+                  />
+                )}
               </Grid>
 
               <Grid item xs={12}>
-                {/* <TextField
-                  required
-                  fullWidth
-                  id="password"
-                  label="Password"
-                  name="password"
-                  type="password"
-                  inputRef={inputPasswordRef}
-                /> */}
-                <TextField
-                  required
-                  fullWidth
-                  id="password"
-                  label="Password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  inputRef={inputPasswordRef}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                          edge="end"
-                        >
-                          {showPassword && <Visibility />}
-                          {!showPassword && <VisibilityOff />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
+                {incorrectLoginDetails ? (
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    error
+                    name="password"
+                    id="password"
+                    label="Password"
+                    type={showPassword ? "text" : "password"}
+                    inputRef={inputPasswordRef}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                            edge="end"
+                          >
+                            {showPassword && <Visibility />}
+                            {!showPassword && <VisibilityOff />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    helperText="Max 20 characters"
+                  />
+                ) : (
+                  <TextField
+                    required
+                    fullWidth
+                    id="password"
+                    label="Password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    inputRef={inputPasswordRef}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                            edge="end"
+                          >
+                            {showPassword && <Visibility />}
+                            {!showPassword && <VisibilityOff />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    helperText="Max 20 characters"
+                  />
+                )}
               </Grid>
 
               <Grid
@@ -412,100 +488,214 @@ const SignUp = () => {
               </Grid>
 
               <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="given-name"
-                  label="First Name"
-                  id="given-name"
-                  inputRef={inputNameRef}
-                  helperText="Max 20 characters"
-                />
+                {incorrectPersonalDetails ? (
+                  <TextField
+                    required
+                    fullWidth
+                    error
+                    name="given-name"
+                    id="given-name"
+                    label="First Name"
+                    inputRef={inputNameRef}
+                    helperText="Max 20 characters"
+                  />
+                ) : (
+                  <TextField
+                    required
+                    fullWidth
+                    name="given-name"
+                    label="First Name"
+                    id="given-name"
+                    inputRef={inputNameRef}
+                    helperText="Max 20 characters"
+                  />
+                )}
               </Grid>
 
               <Grid item xs={12}>
-                <TextField
-                  name="current-town"
-                  required
-                  fullWidth
-                  id="current-town"
-                  label="Current Residential Town"
-                  inputRef={inputCurrentResidentialTownRef}
-                  onChange={handleTownSelect}
-                  defaultValue=""
-                  select
-                >
-                  {townOptions.map((town, index) => {
-                    return (
-                      <MenuItem value={town} key={index}>
-                        {town}
-                      </MenuItem>
-                    );
-                  })}
-                </TextField>
+                {incorrectPersonalDetails ? (
+                  <TextField
+                    name="current-town"
+                    required
+                    fullWidth
+                    error
+                    id="current-town"
+                    label="Current Residential Town"
+                    inputRef={inputCurrentResidentialTownRef}
+                    onChange={handleTownSelect}
+                    defaultValue=""
+                    select
+                    helperText="Select 1 Town"
+                  >
+                    {townOptions.map((town, index) => {
+                      return (
+                        <MenuItem value={town} key={index}>
+                          {town}
+                        </MenuItem>
+                      );
+                    })}
+                  </TextField>
+                ) : (
+                  <TextField
+                    name="current-town"
+                    required
+                    fullWidth
+                    id="current-town"
+                    label="Current Residential Town"
+                    inputRef={inputCurrentResidentialTownRef}
+                    onChange={handleTownSelect}
+                    defaultValue=""
+                    select
+                  >
+                    {townOptions.map((town, index) => {
+                      return (
+                        <MenuItem value={town} key={index}>
+                          {town}
+                        </MenuItem>
+                      );
+                    })}
+                  </TextField>
+                )}
               </Grid>
 
               <Grid item xs={12}>
-                <TextField
-                  name="current-flat-type"
-                  required
-                  fullWidth
-                  id="current-flat-type"
-                  label="Current Flat Type"
-                  inputRef={inputCurrentResidentialFlatTypeRef}
-                  onChange={handleFlatTypeSelect}
-                  defaultValue=""
-                  select
-                >
-                  {flatTypeOptions.map((flatType, index) => {
-                    return (
-                      <MenuItem value={flatType} key={index}>
-                        {flatType}
-                      </MenuItem>
-                    );
-                  })}
-                </TextField>
+                {incorrectPersonalDetails ? (
+                  <TextField
+                    name="current-flat-type"
+                    required
+                    fullWidth
+                    error
+                    id="current-flat-type"
+                    label="Current Flat Type"
+                    inputRef={inputCurrentResidentialFlatTypeRef}
+                    onChange={handleFlatTypeSelect}
+                    defaultValue=""
+                    select
+                    helperText="Select 1 Flat Type"
+                  >
+                    {flatTypeOptions.map((flatType, index) => {
+                      return (
+                        <MenuItem value={flatType} key={index}>
+                          {flatType}
+                        </MenuItem>
+                      );
+                    })}
+                  </TextField>
+                ) : (
+                  <TextField
+                    name="current-flat-type"
+                    required
+                    fullWidth
+                    id="current-flat-type"
+                    label="Current Flat Type"
+                    inputRef={inputCurrentResidentialFlatTypeRef}
+                    onChange={handleFlatTypeSelect}
+                    defaultValue=""
+                    select
+                  >
+                    {flatTypeOptions.map((flatType, index) => {
+                      return (
+                        <MenuItem value={flatType} key={index}>
+                          {flatType}
+                        </MenuItem>
+                      );
+                    })}
+                  </TextField>
+                )}
               </Grid>
 
               <Grid item xs={12}>
-                <TextField
-                  name="current-flat-model"
-                  required
-                  fullWidth
-                  id="current-flat-model"
-                  label="Current Flat Model"
-                  inputRef={inputCurrentResidentialFlatModelRef}
-                  onChange={handleFlatModelSelect}
-                  defaultValue=""
-                  select
-                >
-                  <MenuItem></MenuItem>
-                  {flatTypeSelected ? displayFlatModelOptions() : ""}
-                </TextField>
+                {incorrectPersonalDetails ? (
+                  <TextField
+                    name="current-flat-model"
+                    required
+                    fullWidth
+                    error
+                    id="current-flat-model"
+                    label="Current Flat Model"
+                    inputRef={inputCurrentResidentialFlatModelRef}
+                    onChange={handleFlatModelSelect}
+                    defaultValue=""
+                    select
+                    helperText="Select 1 Flat Model"
+                  >
+                    <MenuItem></MenuItem>
+                    {flatTypeSelected ? displayFlatModelOptions() : ""}
+                  </TextField>
+                ) : (
+                  <TextField
+                    name="current-flat-model"
+                    required
+                    fullWidth
+                    id="current-flat-model"
+                    label="Current Flat Model"
+                    inputRef={inputCurrentResidentialFlatModelRef}
+                    onChange={handleFlatModelSelect}
+                    defaultValue=""
+                    select
+                  >
+                    <MenuItem></MenuItem>
+                    {flatTypeSelected ? displayFlatModelOptions() : ""}
+                  </TextField>
+                )}
               </Grid>
 
               <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="current-monthly-combined-income"
-                  label="Current Monthly Combined Income"
-                  id="current-monthly-combined-income"
-                  inputRef={inputCurrentMonthlyCombinedIncomeRef}
-                  helperText="Combined household income"
-                />
+                {incorrectPersonalDetails ? (
+                  <TextField
+                    required
+                    fullWidth
+                    error
+                    name="current-monthly-combined-income"
+                    label="Current Monthly Combined Income"
+                    id="current-monthly-combined-income"
+                    inputRef={inputCurrentMonthlyCombinedIncomeRef}
+                    helperText={
+                      errorNumbersOnly
+                        ? "Enter numbers only"
+                        : "Combined household income"
+                    }
+                  />
+                ) : (
+                  <TextField
+                    required
+                    fullWidth
+                    name="current-monthly-combined-income"
+                    label="Current Monthly Combined Income"
+                    id="current-monthly-combined-income"
+                    inputRef={inputCurrentMonthlyCombinedIncomeRef}
+                    helperText="Combined household income"
+                  />
+                )}
               </Grid>
 
               <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="current-younger-age"
-                  label="Current Younger Age"
-                  id="current-younger-age"
-                  inputRef={inputCurrentYoungerAgeRef}
-                  helperText="Younger age of yourself/spouse"
-                />
+                {incorrectPersonalDetails ? (
+                  <TextField
+                    required
+                    fullWidth
+                    error
+                    name="current-younger-age"
+                    label="Current Younger Age"
+                    id="current-younger-age"
+                    inputRef={inputCurrentYoungerAgeRef}
+                    helperText={
+                      errorNumbersOnly
+                        ? "Enter numbers only"
+                        : "Input the younger age between you / spouse"
+                    }
+                  />
+                ) : (
+                  <TextField
+                    required
+                    fullWidth
+                    name="current-younger-age"
+                    label="Current Younger Age"
+                    id="current-younger-age"
+                    inputRef={inputCurrentYoungerAgeRef}
+                    helperText="Input the younger age between you / spouse"
+                  />
+                )}
               </Grid>
             </Grid>
             <Button
