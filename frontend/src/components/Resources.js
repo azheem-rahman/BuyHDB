@@ -1,8 +1,10 @@
 import React from "react";
+import NavBar from "./NavBar";
 
 const Resources = () => {
   return (
     <div>
+      <NavBar />
       <br />
       <div className="resources-header">
         <h1 className="centered">Resources</h1>
