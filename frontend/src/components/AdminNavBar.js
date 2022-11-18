@@ -13,6 +13,18 @@ import SomeContext from "../context/some-context";
 const NavBar = () => {
   const someCtx = useContext(SomeContext);
 
+  const handleLogOut = () => {
+    // clear local storage
+    localStorage.clear();
+
+    // clear data in context store
+    someCtx.setUserLoggedIn(false);
+    someCtx.setCurrentUsername("");
+    someCtx.setAccessToken("");
+    someCtx.setRefreshToken("");
+    someCtx.setCurrentAccountType("");
+  };
+
   return (
     <Navbar className="navbar-static-top" expand="sm" variant="light">
       <Container>
@@ -38,7 +50,7 @@ const NavBar = () => {
               title={`Hi, ${someCtx.currentUsername}`}
               id="basic-nav-dropdown"
             >
-              <NavDropdown.Item as={Link} to="/">
+              <NavDropdown.Item as={Link} to="/" onClick={handleLogOut}>
                 Logout
               </NavDropdown.Item>
             </NavDropdown>
