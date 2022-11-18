@@ -26,13 +26,13 @@ Bootstrap and MaterialsUI (MUI) were used as CSS framework.
 
 Clone this repository. You will need `node` and `npm` installed globally on your machine.
 
-Install dependencies
+### Install dependencies
 
 ```
 npm install
 ```
 
-Commands
+### Commands
 
 ```
 // start React app
@@ -51,7 +51,7 @@ BuyHDB uses ReactJS as front-end framework, repository can be found [here](/fron
 - React app includes a login page, user home page, admin home page, where users/admins can carry out tasks from the home page upon logging in.
 - User/admin home page includes a navigation bar for users/admins to navigate to other pages within their accounts.
 
-Application Structure
+### Application Structure
 
 ```
 --> Login Page
@@ -74,9 +74,7 @@ Application Structure
 
 ## Back-End (ExpressJS)
 
-BuyHDB uses ExpressJS as back-end framework, repository can be found [here](/backend/)
-
-Postman was used to test the backend before frontend was available.
+BuyHDB uses ExpressJS as back-end framework, repository can be found [here](/backend/). Postman was used to test the backend before frontend was available.
 
 ### Back-End API Endpoints
 
@@ -88,8 +86,8 @@ Postman was used to test the backend before frontend was available.
 
 #### Users Routes
 
-1. `PUT` `/user-create-account` - Create a new User Account
-2. `PUT` `/user-create-details` - Create personal details for a new User Account
+1. `PUT` `/user-create-account` - Creates a new User Account
+2. `PUT` `/user-create-details` - Creates personal details for a new User Account
 3. `GET` `/user-get-user-details` - Retrieves personal details for a particular user account
 4. `PATCH` `/user-update-details`- Update personal details for a particular user account
 5. `PUT` `/user-create-listing` - Saves a past resale transaction record selected by user
@@ -206,7 +204,7 @@ CREATE TABLE delete_requests (
 
 ### Mortgage Calculator
 
-- The Mortgage Calculator provides a rough idea as to the affordability of HDB flats based on their income and age.
+- The Mortgage Calculator provides a rough idea as to the affordability of HDB flats based on user's income and age.
 - Users input their personal details such as Combined Monthly Household Income and Current Younger Age. These details will be used to generate rough estimations as to housing mortgage loans that the user can potentially take, either with HDB or with local banks.
 
 ### Displaying past resale transactions on a map view using OneMap API
