@@ -13,7 +13,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-import BuyHDBLogo2 from "../assets/BuyHDBLogo2.jpg";
+import BuyHDBLogo from "../assets/BuyHDBLogo.jpg";
 import LoginCreateAccountSideImage from "../assets/LoginCreateAccountSideImage.jpg";
 
 import { useState, useContext, useRef } from "react";
@@ -149,7 +149,7 @@ const SignInSide = () => {
               alignItems: "center",
             }}
           >
-            <img src={BuyHDBLogo2} style={{ height: 100 }} />
+            <img src={BuyHDBLogo} style={{ height: 100 }} />
             {/* <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
               <LockOutlinedIcon />
             </Avatar> */}

@@ -13,7 +13,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-import BuyHDBLogo2 from "../assets/BuyHDBLogo2.jpg";
+import BuyHDBLogo from "../assets/BuyHDBLogo.jpg";
 import { NavLink, Navigate } from "react-router-dom";
 
 import { useState, useContext, useRef } from "react";
@@ -384,7 +384,7 @@ const SignUp = () => {
             alignItems: "center",
           }}
         >
-          <img src={BuyHDBLogo2} style={{ height: 100 }} />
+          <img src={BuyHDBLogo} style={{ height: 100 }} />
           <Typography component="h1" variant="h5" style={{ marginBottom: 30 }}>
             Sign up
           </Typography>

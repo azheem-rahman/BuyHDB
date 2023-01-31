@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Link, NavLink } from "react-router-dom";
 import styles from "./NavBar.module.css";
 
-import BuyHDBLogo2 from "../assets/BuyHDBLogo2.jpg";
+import BuyHDBLogo from "../assets/BuyHDBLogo.jpg";
 
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
@@ -29,7 +29,7 @@ const NavBar = () => {
     <Navbar className="navbar-static-top" expand="sm" variant="light">
       <Container>
         <Navbar.Brand as={Link} to="/admin-homepage">
-          <img className={styles.navbarbuyhdblogo} src={BuyHDBLogo2} alt="" />
+          <img className={styles.navbarbuyhdblogo} src={BuyHDBLogo} alt="" />
         </Navbar.Brand>
 
         <Navbar.Toggle aria-controls="basic-navbar-nav" />

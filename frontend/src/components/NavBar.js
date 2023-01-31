@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { Link, NavLink, Navigate } from "react-router-dom";
 import styles from "./NavBar.module.css";
 
-import BuyHDBLogo2 from "../assets/BuyHDBLogo2.jpg";
+import BuyHDBLogo from "../assets/BuyHDBLogo.jpg";
 
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
@@ -88,7 +88,7 @@ const NavBar = () => {
           ></RequestDeleteAccountModal>
         )}
         <Navbar.Brand as={Link} to="/homepage">
-          <img className={styles.navbarbuyhdblogo} src={BuyHDBLogo2} alt="" />
+          <img className={styles.navbarbuyhdblogo} src={BuyHDBLogo} alt="" />
         </Navbar.Brand>
 
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
