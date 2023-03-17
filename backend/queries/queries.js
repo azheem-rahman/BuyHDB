@@ -1,15 +1,37 @@
-const Pool = require("pg").Pool;
+// previously used for internal database
+// const Pool = require("pg").Pool;
+
+const Pool = require("pg");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid");
 
-const pool = new Pool({
-  user: "admin",
-  host: "localhost",
-  database: "buy_hdb",
-  password: "admin",
-  port: 5432,
-});
+const connectDB = async () => {
+  try {
+    const pool = new Pool({
+      user: "admin",
+      host: "dpg-cg43rqvdvk4st70utnfg-a",
+      database: "buy_hdb",
+      password: "Wo6nnHeeZm7P7hDobCSLoAVXZWPDaXwa",
+      port: 5432,
+    });
+
+    await pool.connect(process.env.RENDER_URL);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+connectDB();
+
+// below code used to connect to local database
+// const pool = new Pool({
+//   user: "admin",
+//   host: "localhost",
+//   database: "buy_hdb",
+//   password: "admin",
+//   port: 5432,
+// });
 
 // ========================================================================= //
 // ===================== SHARED ADMIN AND USERS PORTION ==================== //
